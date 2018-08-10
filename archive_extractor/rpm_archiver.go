@@ -35,14 +35,13 @@ func (za RpmArchvier) ExtractArchive(archivePath string, advanceProcessing func(
 	//rewind to start of the file
 	file.Seek(int64(headerEnd), 0)
 	fileReader, err := compression.CreateCompressionFromBytes(archiveHead).GetReader(file)
+	defer fileReader.Close()
 	if err != nil {
 		return nil
 	}
 	if fileReader == nil {
 		return err
 	}
-	defer fileReader.Close()
-
 	rc := cpio.NewReader(fileReader)
 	var count = 0
 	for {
