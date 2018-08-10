@@ -29,14 +29,14 @@ func advanceProcessing(header *ArchiveHeader, advanceProcessingParams map[string
 		return errors.New("Advance processing params are missing")
 	}
 	var ok bool
-	var archveData *ArchiveData
-	if archveData, ok = advanceProcessingParams["archveData"].(*ArchiveData); !ok {
+	var archiveData *ArchiveData
+	if archiveData, ok = advanceProcessingParams["archiveData"].(*ArchiveData); !ok {
 		return errors.New("Advance processing archveData param is missing")
 	}
-	archveData.Name = header.Name
-	archveData.ModTime=header.ModTime
-	archveData.Size=header.Size
-	archveData.IsFolder=header.IsFolder
+	archiveData.Name = header.Name
+	archiveData.ModTime=header.ModTime
+	archiveData.Size=header.Size
+	archiveData.IsFolder=header.IsFolder
  	fmt.Print(archveData)
 	return nil
 }
