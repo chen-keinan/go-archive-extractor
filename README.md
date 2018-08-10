@@ -30,14 +30,13 @@ func advanceProcessing(header *ArchiveHeader, advanceProcessingParams map[string
 	var ok bool
 	var archveData *ArchiveData
 	if archveData, ok = advanceProcessingParams["archveData"].(*ArchiveData); !ok {
-		return errors.New("Advance processing parentFile param is missing")
+		return errors.New("Advance processing archveData param is missing")
 	}
 	archveData.Name = header.Name
 	archveData.ModTime=header.ModTime
 	archveData.Size=header.Size
 	archveData.IsFolder=header.IsFolder
-	// create child files
-	fmt.Print(archveData)
+ 	fmt.Print(archveData)
 	return nil
 }
 ```
