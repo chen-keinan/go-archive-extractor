@@ -5,7 +5,7 @@ that can open archive types (tar , zip , rpm ,deb, 7zip) and invoke advance proc
 while iterating archive headers
 This library encapsulate logic from 2 best licenses detection libraries :
 
-Example :
+- Define advance params to b uses in advance processing method :
  ```
 type ArchiveData struct {
 	ArchiveReader io.Reader
@@ -22,6 +22,7 @@ func advanceProcessingParams() map[string]interface{} {
 	}
 }
 ```
+- Define advance processing method to be invoke during file extraction :
 ```
 func advanceProcessing(header *ArchiveHeader, advanceProcessingParams map[string]interface{}) error {
 	if len(advanceProcessingParams) == 0 {
@@ -40,6 +41,7 @@ func advanceProcessing(header *ArchiveHeader, advanceProcessingParams map[string
 	return nil
 }
 ```
+- create archive extractor type and pass advance processing method and params :
 ```
 func main() {
 	za := &ZipArchvier{}
