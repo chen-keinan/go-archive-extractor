@@ -7,9 +7,9 @@ import (
 type ZipArchvier struct {
 }
 
-func (za ZipArchvier) ExtractArchive(archivePath string, advanceProcessing func(header *ArchiveHeader, advanceProcessingParams map[string]interface{}) error,
-	advanceProcessingParams map[string]interface{}) error {
-	r, err := zip.OpenReader(archivePath)
+func (za ZipArchvier) ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error,
+	params map[string]interface{}) error {
+	r, err := zip.OpenReader(path)
 	if err != nil {
 		if err.Error() == "zip: not a valid zip file" {
 			return nil
@@ -24,7 +24,7 @@ func (za ZipArchvier) ExtractArchive(archivePath string, advanceProcessing func(
 			return err
 		}
 		archiveHeader := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.Modified.Unix(), archiveEntry.FileInfo().Size())
-		err = advanceProcessing(archiveHeader, advanceProcessingParams)
+		err = processingFunc(archiveHeader, params)
 		if err != nil {
 			rc.Close()
 			return err

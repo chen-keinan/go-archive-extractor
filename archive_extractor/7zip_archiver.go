@@ -11,9 +11,9 @@ import (
 type SevenZipArchvier struct {
 }
 
-func (za SevenZipArchvier) ExtractArchive(archivePath string, advanceProcessing func(header *ArchiveHeader, advanceProcessingParams map[string]interface{}) error,
-	advanceProcessingParams map[string]interface{}) error {
-	r, err := archive.NewArchive(archivePath)
+func (za SevenZipArchvier) ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error,
+	params map[string]interface{}) error {
+	r, err := archive.NewArchive(path)
 	if err != nil {
 		if err.Error() == "unarr: No valid RAR, ZIP, 7Z or TAR archive" {
 			return nil
@@ -38,7 +38,7 @@ func (za SevenZipArchvier) ExtractArchive(archivePath string, advanceProcessing 
 				rc := &SevenZipReader{Archive: r, Size: r.Size()}
 				// create child files
 				archiveHeader := NewArchiveHeader(rc, r.Name(), r.ModTime().Unix(), int64(r.Size()))
-				err = advanceProcessing(archiveHeader, advanceProcessingParams)
+				err = processingFunc(archiveHeader, params)
 				if err != nil {
 					return err
 				}

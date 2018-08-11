@@ -11,14 +11,14 @@ import (
 type TarArchvier struct {
 }
 
-func (za TarArchvier) ExtractArchive(archivePath string, advanceProcessing func(header *ArchiveHeader, advanceProcessingParams map[string]interface{}) error,
-	advanceProcessingParams map[string]interface{}) error { // recover handling in case of failure during indexing process
-	archiveFile, err := os.Open(archivePath)
+func (za TarArchvier) ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error,
+	params map[string]interface{}) error {
+	archiveFile, err := os.Open(path)
 	if err != nil {
 		return err
 	}
 	defer archiveFile.Close()
-	fileReader, err := compression.CreateCompression(archivePath).GetReader(archiveFile)
+	fileReader, err := compression.CreateCompression(path).GetReader(archiveFile)
 	if err != nil {
 		return nil
 	}
@@ -37,7 +37,7 @@ func (za TarArchvier) ExtractArchive(archivePath string, advanceProcessing func(
 		}
 		if !archiveEntry.FileInfo().IsDir() && !utils.PlaceHolderFolder(archiveEntry.FileInfo().Name()) {
 			archiveHeader := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.ModTime.Unix(), archiveEntry.FileInfo().Size())
-			err = advanceProcessing(archiveHeader, advanceProcessingParams)
+			err = processingFunc(archiveHeader, params)
 			if err != nil {
 				return err
 			}

@@ -11,13 +11,13 @@ import (
 type RpmArchvier struct {
 }
 
-func (za RpmArchvier) ExtractArchive(archivePath string, advanceProcessing func(header *ArchiveHeader, advanceProcessingParams map[string]interface{}) error,
-	advanceProcessingParams map[string]interface{}) error {
-	rpm, err := rpm.OpenPackageFile(archivePath)
+func (za RpmArchvier) ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error,
+	params map[string]interface{}) error {
+	rpm, err := rpm.OpenPackageFile(path)
 	if err != nil {
 		return nil
 	}
-	file, err := os.Open(archivePath)
+	file, err := os.Open(path)
 	if err != nil {
 		return err
 	}
@@ -60,7 +60,7 @@ func (za RpmArchvier) ExtractArchive(archivePath string, advanceProcessing func(
 		if archiveEntry.Mode != cpio.TYPE_DIR {
 			if archiveEntry != nil {
 				archiveHeader := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.Mtime, archiveEntry.Size)
-				err = advanceProcessing(archiveHeader, advanceProcessingParams)
+				err = processingFunc(archiveHeader, params)
 				if err != nil {
 					return err
 				}

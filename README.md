@@ -24,7 +24,7 @@ func params() map[string]interface{} {
 ```
 - Define advance processing method to be invoke during archive extraction :
 ```
-func advanceProcessing(header *ArchiveHeader, params map[string]interface{}) error {
+func processingFunc(header *ArchiveHeader, params map[string]interface{}) error {
 	if len(advanceProcessingParams) == 0 {
 		return errors.New("Advance processing params are missing")
 	}
@@ -45,7 +45,7 @@ func advanceProcessing(header *ArchiveHeader, params map[string]interface{}) err
 ```
 func main() {
 	za := &ZipArchvier{}
-	err:=za.ExtractArchive("/User/Name/file.zip",advanceProcessing,params())
+	err:=za.ExtractArchive("/User/Name/file.zip",processingFunc,params())
 	if err != nil{
 		fmt.Print(err)
 	}
