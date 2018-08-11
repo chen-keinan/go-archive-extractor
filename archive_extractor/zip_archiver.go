@@ -11,9 +11,6 @@ func (za ZipArchvier) ExtractArchive(path string, processingFunc func(header *Ar
 	params map[string]interface{}) error {
 	r, err := zip.OpenReader(path)
 	if err != nil {
-		if err.Error() == "zip: not a valid zip file" {
-			return nil
-		}
 		return err
 	}
 	defer r.Close()

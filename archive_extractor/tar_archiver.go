@@ -2,6 +2,7 @@ package archive_extractor
 
 import (
 	"archive/tar"
+	"github.com/go-archive-extractor/archive_extractor/archiver_errors"
 	"github.com/go-archive-extractor/compression"
 	"github.com/go-archive-extractor/utils"
 	"io"
@@ -15,7 +16,7 @@ func (za TarArchvier) ExtractArchive(path string, processingFunc func(header *Ar
 	params map[string]interface{}) error {
 	archiveFile, err := os.Open(path)
 	if err != nil {
-		return err
+		return archiver_errors.New(err)
 	}
 	defer archiveFile.Close()
 	fileReader, err := compression.CreateCompression(path).GetReader(archiveFile)

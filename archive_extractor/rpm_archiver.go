@@ -3,6 +3,7 @@ package archive_extractor
 import (
 	"github.com/JFrogDev/go-rpm"
 	"github.com/deoxxa/gocpio"
+	"github.com/go-archive-extractor/archive_extractor/archiver_errors"
 	"github.com/go-archive-extractor/compression"
 	"io"
 	"os"
@@ -15,7 +16,7 @@ func (za RpmArchvier) ExtractArchive(path string, processingFunc func(header *Ar
 	params map[string]interface{}) error {
 	rpm, err := rpm.OpenPackageFile(path)
 	if err != nil {
-		return nil
+		return archiver_errors.New(err)
 	}
 	file, err := os.Open(path)
 	if err != nil {
