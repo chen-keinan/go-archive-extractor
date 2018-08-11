@@ -15,16 +15,10 @@ func (za SevenZipArchvier) ExtractArchive(path string, processingFunc func(heade
 	params map[string]interface{}) error {
 	r, err := archive.NewArchive(path)
 	if err != nil {
-		if err.Error() == "unarr: No valid RAR, ZIP, 7Z or TAR archive" {
-			return nil
-		}
 		return err
 	}
 	allFiles, err := r.List()
 	if err != nil {
-		if err.Error() == "unarr: No valid RAR, ZIP, 7Z or TAR archive" {
-			return nil
-		}
 		return err
 	}
 	defer r.Close()
