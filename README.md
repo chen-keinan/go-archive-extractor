@@ -1,7 +1,7 @@
 # go-archive-extractor
 
 The archive-extractor is a library and set of tools
-that can open archive types (tar , zip , rpm ,deb, 7zip) with supported compressions (bz2,gz,Z,infl,xp3,xz) on tar files
+that can extract many archive types (tar , zip , rpm ,deb, 7zip) with supported compressions (bz2,gz,Z,infl,xp3,xz) on tar files
 and invoke advance processing function while iterating archive headers
 
 Example:
