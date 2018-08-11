@@ -6,7 +6,7 @@ import (
 )
 
 type Archiver interface {
-	ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error, error, params map[string]interface{})
+	ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error, params map[string]interface{}) error
 }
 
 type ArchiveHeader struct {
