@@ -46,9 +46,8 @@ func processingFunc(header *ArchiveHeader, params map[string]interface{}) error 
 ```
 func main() {
 	za := &ZipArchvier{}
-	err:=za.ExtractArchive("/User/Name/file.zip",processingFunc,params())
-	if err != nil{
-		fmt.Print(err)
-	}
+	if err:=za.ExtractArchive("/User/Name/file.zip",processingFunc,params()); err != nil{
+ 		fmt.Print(err)
+ 		}
 }
 ```
