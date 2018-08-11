@@ -16,12 +16,12 @@ func (za TarArchvier) ExtractArchive(path string, processingFunc func(header *Ar
 	params map[string]interface{}) error {
 	archiveFile, err := os.Open(path)
 	if err != nil {
-		return archiver_errors.New(err)
+		return err
 	}
 	defer archiveFile.Close()
 	fileReader, err := compression.CreateCompression(path).GetReader(archiveFile)
 	if err != nil {
-		return nil
+		return archiver_errors.New(err)
 	}
 	if fileReader == nil {
 		fileReader = archiveFile
