@@ -16,7 +16,7 @@ type ArchiveData struct {
 }
 ```
 ```
-func advanceProcessingParams() map[string]interface{} {
+func params() map[string]interface{} {
 	return map[string]interface{}{
 		"archveData": &ArchiveData{},
 	}
@@ -24,13 +24,13 @@ func advanceProcessingParams() map[string]interface{} {
 ```
 - Define advance processing method to be invoke during archive extraction :
 ```
-func advanceProcessing(header *ArchiveHeader, advanceProcessingParams map[string]interface{}) error {
+func advanceProcessing(header *ArchiveHeader, params map[string]interface{}) error {
 	if len(advanceProcessingParams) == 0 {
 		return errors.New("Advance processing params are missing")
 	}
 	var ok bool
 	var archiveData *ArchiveData
-	if archiveData, ok = advanceProcessingParams["archiveData"].(*ArchiveData); !ok {
+	if archiveData, ok = params["archiveData"].(*ArchiveData); !ok {
 		return errors.New("Advance processing archveData param is missing")
 	}
 	archiveData.Name = header.Name
@@ -45,7 +45,7 @@ func advanceProcessing(header *ArchiveHeader, advanceProcessingParams map[string
 ```
 func main() {
 	za := &ZipArchvier{}
-	err:=za.ExtractArchive("/User/Name/file.zip",advanceProcessing,advanceProcessingParams())
+	err:=za.ExtractArchive("/User/Name/file.zip",advanceProcessing,params())
 	if err != nil{
 		fmt.Print(err)
 	}
