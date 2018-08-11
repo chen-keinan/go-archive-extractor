@@ -11,5 +11,5 @@ func New(e error) ArchiverExtractorError {
 }
 
 func (ore ArchiverExtractorError) Error() string {
-	return fmt.Sprintf("Failed to Open Tar Compression Error,%v", ore.archiverError)
+	return fmt.Sprintf("Failed to Open Archive,%v", ore.archiverError)
 }
