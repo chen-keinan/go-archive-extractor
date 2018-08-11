@@ -2,7 +2,7 @@
 
 The archive-extractor is a library and set of tools
 that can open archive types (tar , zip , rpm ,deb, 7zip) with supported compressions (bz2,gz,Z,infl,xp3,xz) on tar files
-and invoke advance processing method while iterating archive headers
+and invoke advance processing function while iterating archive headers
 
 Example:
 
@@ -23,7 +23,7 @@ func params() map[string]interface{} {
 	}
 }
 ```
-- Define advance processing func to be invoke during archive extraction :
+- Define advance processing function to be invoke during archive extraction :
 ```
 func processingFunc(header *ArchiveHeader, params map[string]interface{}) error {
 	if len(advanceProcessingParams) == 0 {
@@ -42,7 +42,7 @@ func processingFunc(header *ArchiveHeader, params map[string]interface{}) error 
 	return nil
 }
 ```
-- create archive extractor type and pass advance processing func and params :
+- create archive extractor type and pass advance processing function and params :
 ```
 func main() {
 	za := &ZipArchvier{}
