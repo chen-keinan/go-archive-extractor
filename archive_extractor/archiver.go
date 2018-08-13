@@ -1,7 +1,7 @@
 package archive_extractor
 
 import (
-	"github.com/go-archive-extractor/utils"
+	"github.com/chen-keinan/go-archive-extractor/utils"
 	"io"
 )
 
