@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
-
-	"io/ioutil"
 )
 
 func TestRpmArchiver(t *testing.T) {
@@ -20,8 +18,4 @@ func TestRpmArchiver(t *testing.T) {
 	assert.Equal(t, ad.ModTime, int64(1517299253))
 	assert.Equal(t, ad.IsFolder, false)
 	assert.Equal(t, ad.Size, int64(183))
-	b, err := ioutil.ReadAll(ad.ArchiveReader)
-	if err != nil {
-		t.Fatal(err)
-	}
 }

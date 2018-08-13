@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
-
-	"io/ioutil"
 )
 
 func TestDebArchiver(t *testing.T) {
@@ -20,8 +18,4 @@ func TestDebArchiver(t *testing.T) {
 	assert.Equal(t, ad.ModTime, int64(1485714631))
 	assert.Equal(t, ad.IsFolder, false)
 	assert.Equal(t, ad.Size, int64(42284))
-	b, err := ioutil.ReadAll(ad.ArchiveReader)
-	if err != nil {
-		t.Fatal(err)
-	}
 }

@@ -5,7 +5,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"testing"
 
-	"io/ioutil"
 	"strings"
 )
 
@@ -30,8 +29,4 @@ func TestTarArchiver(t *testing.T) {
 	assert.Equal(t, ad.ModTime, int64(1531307652))
 	assert.Equal(t, ad.IsFolder, false)
 	assert.Equal(t, ad.Size, int64(3685))
-	b, err := ioutil.ReadAll(ad.ArchiveReader)
-	if err != nil {
-		t.Fatal(err)
-	}
 }
