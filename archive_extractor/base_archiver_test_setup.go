@@ -2,7 +2,6 @@ package archive_extractor
 
 import (
 	"errors"
-	"fmt"
 	"io"
 )
 
@@ -16,7 +15,7 @@ type ArchiveData struct {
 
 func params() map[string]interface{} {
 	return map[string]interface{}{
-		"archveData": &ArchiveData{},
+		"archiveData": &ArchiveData{},
 	}
 }
 
@@ -27,12 +26,12 @@ func processingFunc(header *ArchiveHeader, params map[string]interface{}) error 
 	var ok bool
 	var archiveData *ArchiveData
 	if archiveData, ok = params["archiveData"].(*ArchiveData); !ok {
-		return errors.New("Advance processing archveData param is missing")
+		return errors.New("Failed to read param")
 	}
 	archiveData.Name = header.Name
 	archiveData.ModTime = header.ModTime
 	archiveData.Size = header.Size
 	archiveData.IsFolder = header.IsFolder
-	fmt.Print(archiveData)
+	archiveData.ArchiveReader = header.ArchiveReader
 	return nil
 }
