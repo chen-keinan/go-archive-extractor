@@ -3,8 +3,8 @@ package archive_extractor
 import (
 	"errors"
 	"fmt"
+	"github.com/chen-keinan/go-archive-extractor/utils"
 	archive "github.com/gen2brain/go-unarr"
-	"github.com/go-archive-extractor/utils"
 	"io"
 )
 

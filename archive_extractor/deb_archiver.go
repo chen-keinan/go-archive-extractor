@@ -7,7 +7,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/go-archive-extractor/utils"
+	"github.com/chen-keinan/go-archive-extractor/utils"
 )
 
 type DebArchvier struct {
