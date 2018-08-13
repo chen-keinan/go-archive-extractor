@@ -18,7 +18,4 @@ func Test7ZipArchiver(t *testing.T) {
 	assert.Equal(t, ad.ModTime, int64(-11644473600))
 	assert.Equal(t, ad.IsFolder, false)
 	assert.Equal(t, ad.Size, int64(44))
-	//	b,_:=ioutil.ReadAll(ad.ArchiveReader)
-	//	fmt.Print(b)
-	//	assert.Equal(t,string(b),"")
 }
