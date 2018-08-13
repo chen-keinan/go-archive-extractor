@@ -1,8 +1,8 @@
 package archive_extractor
 
 import (
+	"github.com/go-archive-extractor/utils"
 	"io"
-	"jfrog.com/xray/utils"
 )
 
 type Archiver interface {
