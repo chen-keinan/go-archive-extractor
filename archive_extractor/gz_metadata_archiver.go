@@ -2,7 +2,7 @@ package archive_extractor
 
 import (
 	"github.com/chen-keinan/go-archive-extractor/archive_extractor/archiver_errors"
-	"jfrog.com/xray/compression"
+	"github.com/chen-keinan/go-archive-extractor/compression"
 	"os"
 	"time"
 )
