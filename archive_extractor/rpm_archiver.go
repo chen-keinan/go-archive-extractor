@@ -64,7 +64,7 @@ func (za *RpmArchvier) ExtractArchive(path string, processingFunc func(header *A
 				archiveHeader := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.Mtime, archiveEntry.Size)
 				err = processingFunc(archiveHeader, params)
 				if _, ok := params["rpmPkg"]; !ok {
-					params["rpmPkg"] = &RpmPkg{Name: rpm.Name(), Version: rpm.Version(), Release: rpm.Release()}
+					params["rpmPkg"] = &RpmPkg{Name: rpm.Name(), Version: rpm.Version(), Release: rpm.Release(), Licenses: []string{rpm.License()}}
 				}
 				if err != nil {
 					return err
@@ -77,7 +77,8 @@ func (za *RpmArchvier) ExtractArchive(path string, processingFunc func(header *A
 }
 
 type RpmPkg struct {
-	Name    string
-	Version string
-	Release string
+	Name     string
+	Version  string
+	Release  string
+	Licenses []string
 }
