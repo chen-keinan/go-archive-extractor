@@ -18,4 +18,8 @@ func TestRpmArchiver(t *testing.T) {
 	assert.Equal(t, ad.ModTime, int64(1517299253))
 	assert.Equal(t, ad.IsFolder, false)
 	assert.Equal(t, ad.Size, int64(183))
+	rpmPkg := funcParams["rpmPkg"].(*RpmPkg)
+	assert.Equal(t, rpmPkg.Release, "1.fc24.remi.7.0")
+	assert.Equal(t, rpmPkg.Version, "0.4.11")
+	assert.Equal(t, rpmPkg.Name, "php-zstd-devel")
 }
