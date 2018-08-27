@@ -20,7 +20,7 @@ func (za ZipArchvier) ExtractArchive(path string, processingFunc func(header *Ar
 			rc.Close()
 			return err
 		}
-		archiveHeader := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.Modified.Unix(), archiveEntry.FileInfo().Size())
+		archiveHeader := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.ModTime().Unix(), archiveEntry.FileInfo().Size())
 		err = processingFunc(archiveHeader, params)
 		if err != nil {
 			rc.Close()
