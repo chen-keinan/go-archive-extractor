@@ -36,10 +36,10 @@ func (za RpmArchvier) ExtractArchive(path string, processingFunc func(header *Ar
 	//rewind to start of the file
 	file.Seek(int64(headerEnd), 0)
 	fileReader, err := compression.CreateCompressionFromBytes(archiveHead).GetReader(file)
-	defer fileReader.Close()
-	if err != nil {
+	if err != nil || fileReader == nil {
 		return archiver_errors.New(err)
 	}
+	defer fileReader.Close()
 	if fileReader == nil {
 		return err
 	}
