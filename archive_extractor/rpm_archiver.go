@@ -40,9 +40,6 @@ func (za RpmArchvier) ExtractArchive(path string, processingFunc func(header *Ar
 		return archiver_errors.New(err)
 	}
 	defer fileReader.Close()
-	if fileReader == nil {
-		return err
-	}
 	rc := cpio.NewReader(fileReader)
 	var count = 0
 	for {
