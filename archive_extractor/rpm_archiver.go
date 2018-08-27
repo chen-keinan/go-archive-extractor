@@ -10,10 +10,9 @@ import (
 )
 
 type RpmArchvier struct {
-	RpmPackage rpm.Package
 }
 
-func (za *RpmArchvier) ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error,
+func (za RpmArchvier) ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error,
 	params map[string]interface{}) error {
 	rpm, err := rpm.OpenPackageFile(path)
 	if err != nil {
