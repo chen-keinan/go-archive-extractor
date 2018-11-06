@@ -3,7 +3,7 @@ package archive_extractor
 import (
 	"archive/zip"
 	"fmt"
-	"github.com/chen-keinan/go-archive-extractor/archive_extractor/archiver_errors"
+	"github.com/jfrog/go-archive-extractor/archive_extractor/archiver_errors"
 )
 
 type ZipArchvier struct {
