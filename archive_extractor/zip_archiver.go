@@ -3,7 +3,7 @@ package archive_extractor
 import (
 	"archive/zip"
 	"fmt"
-	"github.com/chen-keinan/go-archive-extractor/archive_extractor/archiver_errors"
+	"github.com/jfrog/go-archive-extractor/archive_extractor/archiver_errors"
 )
 
 type ZipArchvier struct {
@@ -16,14 +16,14 @@ func (za ZipArchvier) ExtractArchive(path string, processingFunc func(header *Ar
 		return err
 	}
 	defer r.Close()
-	var multiErr error
+	var multiArchiveErr error
 	for _, archiveEntry := range r.File {
 		rc, err := archiveEntry.Open()
 		if err != nil {
 			if rc != nil {
 				rc.Close()
 			}
-			multiErr = archiver_errors.Append(multiErr, fmt.Errorf("failed to open %s: %v", path, err))
+			multiArchiveErr = archiver_errors.Append(multiArchiveErr, fmt.Errorf("failed to open %s: %v", path, err))
 			continue
 		}
 		archiveHeader := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.ModTime().Unix(), archiveEntry.FileInfo().Size())
@@ -32,10 +32,12 @@ func (za ZipArchvier) ExtractArchive(path string, processingFunc func(header *Ar
 			if rc != nil {
 				rc.Close()
 			}
-			multiErr = archiver_errors.Append(multiErr, fmt.Errorf("failed to process %s: %v", path, err))
-			continue
+			return err
 		}
 		rc.Close()
 	}
-	return multiErr
+	if multiArchiveErr != nil {
+		return archiver_errors.New(multiArchiveErr)
+	}
+	return nil
 }
