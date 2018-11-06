@@ -2,8 +2,8 @@ package archive_extractor
 
 import (
 	"github.com/JFrogDev/go-rpm"
-	"github.com/chen-keinan/go-archive-extractor/archive_extractor/archiver_errors"
-	"github.com/chen-keinan/go-archive-extractor/compression"
+	"github.com/jfrog/go-archive-extractor/archive_extractor/archiver_errors"
+	"github.com/jfrog/go-archive-extractor/compression"
 	"github.com/deoxxa/gocpio"
 	"io"
 	"os"
