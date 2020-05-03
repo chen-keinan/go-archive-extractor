@@ -2,9 +2,9 @@ package archive_extractor
 
 import (
 	"archive/tar"
-	"github.com/chen-keinan/go-archive-extractor/archive_extractor/archiver_errors"
-	"github.com/chen-keinan/go-archive-extractor/compression"
-	"github.com/chen-keinan/go-archive-extractor/utils"
+	"github.com/jfrog/go-archive-extractor/archive_extractor/archiver_errors"
+	"github.com/jfrog/go-archive-extractor/compression"
+	"github.com/jfrog/go-archive-extractor/utils"
 	"io"
 	"os"
 )
