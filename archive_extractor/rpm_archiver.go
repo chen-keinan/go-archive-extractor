@@ -4,8 +4,9 @@ import (
 	"github.com/cavaliercoder/go-cpio"
 	"github.com/jfrog/go-archive-extractor/archive_extractor/archiver_errors"
 	"github.com/jfrog/go-archive-extractor/compression"
-	"github.com/jfrog/go-rpm"
+	"github.com/jfrog/go-rpm/v2"
 	"io"
+	"math"
 	"os"
 )
 
@@ -24,7 +25,7 @@ func (za RpmArchvier) ExtractArchive(path string, processingFunc func(header *Ar
 	defer file.Close()
 
 	//Read content of cpio archive which starts after headers
-	headerEnd := rpmFile.Headers[1].End
+	headerEnd := za.getHeadersEnd(rpmFile.Headers)
 	archiveHead := make([]byte, 6)
 
 	_, err = file.ReadAt(archiveHead, int64(headerEnd))
@@ -45,6 +46,24 @@ func (za RpmArchvier) ExtractArchive(path string, processingFunc func(header *Ar
 	}
 
 	return nil
+}
+
+func (za RpmArchvier) getHeadersEnd(headers []rpm.Header) uint64 {
+	var end uint64
+	offset := 96
+	for i := 0; i < 2; i++ {
+		h := headers[i]
+		// set start and end offsets
+		start := offset
+		end = uint64(start + 16 + (16 * h.IndexCount) + h.Length)
+		offset = int(end)
+		// calculate location of the end of the header by padding to a multiple of 8
+		pad := 8 - int(math.Mod(float64(h.Length), 8))
+		if pad < 8 {
+			offset += pad
+		}
+	}
+	return end
 }
 
 func (za RpmArchvier) readRpm(processingFunc func(header *ArchiveHeader, params map[string]interface{}) error,
