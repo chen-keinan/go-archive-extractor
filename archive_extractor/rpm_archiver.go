@@ -86,7 +86,7 @@ func (za RpmArchvier) readRpm(processingFunc func(header *ArchiveHeader, params 
 				archiveHeader := NewArchiveHeader(cpioReader, archiveEntry.Name, archiveEntry.ModTime.Unix(), archiveEntry.Size)
 				err = processingFunc(archiveHeader, params)
 				if _, ok := params["rpmPkg"]; !ok {
-					params["rpmPkg"] = &RpmPkg{Name: rpmFile.Name(), Version: rpmFile.Version(), Release: rpmFile.Release(), Epoch: rpmFile.Epoch(), Licenses: []string{rpmFile.License()}}
+					params["rpmPkg"] = &RpmPkg{Name: rpmFile.Name(), Version: rpmFile.Version(), Release: rpmFile.Release(), Epoch: rpmFile.Epoch(), Licenses: []string{rpmFile.License()}, Vendor: rpmFile.Vendor()}
 				}
 				if err != nil {
 					return err
@@ -103,4 +103,5 @@ type RpmPkg struct {
 	Release  string
 	Epoch    int
 	Licenses []string
+	Vendor   string
 }
