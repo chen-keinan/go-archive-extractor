@@ -9,7 +9,7 @@ import (
 )
 
 func TestZipUnexpectedEofArchiver(t *testing.T) {
-	za := &ZipArchvier{}
+	za := &ZipArchiver{}
 	funcParams := params()
 	if err := za.ExtractArchive("./fixtures/test.deb", processingFunc, funcParams); err != nil {
 		fmt.Print(err.Error() + "\n")
@@ -18,7 +18,7 @@ func TestZipUnexpectedEofArchiver(t *testing.T) {
 }
 
 func TestZipArchiver(t *testing.T) {
-	za := &ZipArchvier{}
+	za := &ZipArchiver{}
 	funcParams := params()
 	if err := za.ExtractArchive("./fixtures/test.zip", processingFunc, funcParams); err != nil {
 		fmt.Print(err.Error())

@@ -6,11 +6,11 @@ import (
 	"github.com/jfrog/go-archive-extractor/archive_extractor/archiver_errors"
 )
 
-type ZipArchvier struct {
-}
+type ZipArchiver struct{}
 
-func (za ZipArchvier) ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error,
-	params map[string]interface{}) error {
+func (ZipArchiver) ExtractArchive(path string,
+	processingFunc func(*ArchiveHeader, map[string]interface{}) error, params map[string]interface{}) error {
+
 	r, err := zip.OpenReader(path)
 	if err != nil {
 		return err
