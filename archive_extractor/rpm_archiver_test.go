@@ -7,7 +7,7 @@ import (
 )
 
 func TestRpmArchiver(t *testing.T) {
-	za := &RpmArchvier{}
+	za := &RpmArchiver{}
 	funcParams := params()
 	if err := za.ExtractArchive("./fixtures/test.rpm", processingFunc, funcParams); err != nil {
 		fmt.Print(err.Error())

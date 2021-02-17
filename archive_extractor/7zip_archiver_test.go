@@ -7,7 +7,7 @@ import (
 )
 
 func Test7ZipArchiver(t *testing.T) {
-	za := &SevenZipArchvier{}
+	za := &SevenZipArchiver{}
 	funcParams := params()
 	if err := za.ExtractArchive("./fixtures/test.7z", processingFunc, funcParams); err != nil {
 		fmt.Print(err.Error())

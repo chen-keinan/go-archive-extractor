@@ -8,11 +8,11 @@ import (
 	"io"
 )
 
-type SevenZipArchvier struct {
-}
+type SevenZipArchiver struct{}
 
-func (za SevenZipArchvier) ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error,
-	params map[string]interface{}) error {
+func (SevenZipArchiver) ExtractArchive(path string,
+	processingFunc func(*ArchiveHeader, map[string]interface{}) error, params map[string]interface{}) error {
+
 	r, err := archive.NewArchive(path)
 	if err != nil {
 		return err
