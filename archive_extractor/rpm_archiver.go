@@ -7,48 +7,33 @@ import (
 	"github.com/jfrog/go-rpm/v2"
 	"io"
 	"math"
-	"os"
 )
 
-type RpmArchvier struct {
-}
+type RpmArchiver struct{}
 
-func (za RpmArchvier) ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error, params map[string]interface{}) error {
+func (ra RpmArchiver) ExtractArchive(path string,
+	processingFunc func(*ArchiveHeader, map[string]interface{}) error, params map[string]interface{}) error {
+
 	rpmFile, err := rpm.OpenPackageFile(path)
 	if err != nil {
 		return archiver_errors.New(err)
 	}
-	file, err := os.Open(path)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
 
-	//Read content of cpio archive which starts after headers
-	headerEnd := za.getHeadersEnd(rpmFile.Headers)
-	archiveHead := make([]byte, 6)
-
-	_, err = file.ReadAt(archiveHead, int64(headerEnd))
-	if err != nil {
-		return err
-	}
-
-	//rewind to start of the file
-	file.Seek(int64(headerEnd), 0)
-	fileReader, err := compression.CreateCompressionFromBytes(archiveHead).GetReader(file)
-	if err != nil || fileReader == nil {
-		return archiver_errors.New(err)
-	}
-	defer fileReader.Close()
-	err = za.readRpm(processingFunc, params, rpmFile, fileReader)
+	headerEnd := ra.getHeadersEnd(rpmFile.Headers)
+	cReader, err := compression.NewReaderSkipBytes(path, headerEnd)
 	if err != nil {
 		return archiver_errors.New(err)
 	}
+	defer cReader.Close()
 
+	err = ra.readRpm(processingFunc, params, rpmFile, cReader)
+	if err != nil {
+		return archiver_errors.New(err)
+	}
 	return nil
 }
 
-func (za RpmArchvier) getHeadersEnd(headers []rpm.Header) uint64 {
+func (RpmArchiver) getHeadersEnd(headers []rpm.Header) int64 {
 	var end uint64
 	offset := 96
 	for i := 0; i < 2; i++ {
@@ -63,10 +48,10 @@ func (za RpmArchvier) getHeadersEnd(headers []rpm.Header) uint64 {
 			offset += pad
 		}
 	}
-	return end
+	return int64(end)
 }
 
-func (za RpmArchvier) readRpm(processingFunc func(header *ArchiveHeader, params map[string]interface{}) error,
+func (RpmArchiver) readRpm(processingFunc func(*ArchiveHeader, map[string]interface{}) error,
 	params map[string]interface{}, rpmFile *rpm.PackageFile, fileReader io.Reader) error {
 	//create cpio reader
 	cpioReader := cpio.NewReader(fileReader)
@@ -81,16 +66,15 @@ func (za RpmArchvier) readRpm(processingFunc func(header *ArchiveHeader, params 
 			break
 		}
 		count++
-		if !archiveEntry.Mode.IsDir() {
-			if archiveEntry != nil {
-				archiveHeader := NewArchiveHeader(cpioReader, archiveEntry.Name, archiveEntry.ModTime.Unix(), archiveEntry.Size)
-				err = processingFunc(archiveHeader, params)
-				if _, ok := params["rpmPkg"]; !ok {
-					params["rpmPkg"] = &RpmPkg{Name: rpmFile.Name(), Version: rpmFile.Version(), Release: rpmFile.Release(), Epoch: rpmFile.Epoch(), Licenses: []string{rpmFile.License()}, Vendor: rpmFile.Vendor()}
-				}
-				if err != nil {
-					return err
-				}
+		if archiveEntry != nil && !archiveEntry.Mode.IsDir() {
+			archiveHeader := NewArchiveHeader(cpioReader, archiveEntry.Name, archiveEntry.ModTime.Unix(), archiveEntry.Size)
+			err = processingFunc(archiveHeader, params)
+			if _, ok := params["rpmPkg"]; !ok {
+				params["rpmPkg"] = &RpmPkg{Name: rpmFile.Name(), Version: rpmFile.Version(), Release: rpmFile.Release(),
+					Epoch: rpmFile.Epoch(), Licenses: []string{rpmFile.License()}, Vendor: rpmFile.Vendor()}
+			}
+			if err != nil {
+				return err
 			}
 		}
 	}

@@ -7,7 +7,7 @@ import (
 )
 
 func TestDebArchiver(t *testing.T) {
-	za := &DebArchvier{}
+	za := &DebArchiver{}
 	funcParams := params()
 	if err := za.ExtractArchive("./fixtures/test.deb", processingFunc, funcParams); err != nil {
 		fmt.Print(err.Error())

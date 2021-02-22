@@ -10,11 +10,11 @@ import (
 	"github.com/jfrog/go-archive-extractor/utils"
 )
 
-type DebArchvier struct {
-}
+type DebArchiver struct{}
 
-func (za DebArchvier) ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error,
-	params map[string]interface{}) error {
+func (DebArchiver) ExtractArchive(path string,
+	processingFunc func(*ArchiveHeader, map[string]interface{}) error, params map[string]interface{}) error {
+
 	debFile, err := os.Open(path)
 	if err != nil {
 		return err
