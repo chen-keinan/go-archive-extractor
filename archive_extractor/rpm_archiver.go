@@ -15,8 +15,11 @@ func (ra RpmArchiver) ExtractArchive(path string,
 	processingFunc func(*ArchiveHeader, map[string]interface{}) error, params map[string]interface{}) error {
 
 	rpmFile, err := rpm.OpenPackageFile(path)
-	if err != nil {
+	if compression.IsGetReaderError(err) {
 		return archiver_errors.New(err)
+	}
+	if err != nil {
+		return err
 	}
 
 	headerEnd := ra.getHeadersEnd(rpmFile.Headers)

@@ -7,6 +7,7 @@ import (
 	"compress/gzip"
 	"compress/lzw"
 	"compress/zlib"
+	"errors"
 	"github.com/ulikunitz/xz"
 	"github.com/ulikunitz/xz/lzma"
 	"io"
@@ -149,10 +150,29 @@ func initReader(fa *fileArgs, getReader func(io.Reader) (io.ReadCloser, error)) 
 	}
 	r, err := getReader(f)
 	if err != nil {
-		return nil, err
+		return nil, &ErrGetReader{err}
 	}
 
 	return &cReader{reader: r, file: f}, nil
+}
+
+type ErrGetReader struct {
+	err error
+}
+
+func (e *ErrGetReader) Error() string {
+	return e.err.Error()
+}
+
+func IsGetReaderError(err error) bool {
+	is := err
+	for is != nil {
+		if _, ok := is.(*ErrGetReader); ok {
+			return true
+		}
+		is = errors.Unwrap(is)
+	}
+	return false
 }
 
 func bz2Reader(reader io.Reader) (io.ReadCloser, error) {
