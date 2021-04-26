@@ -73,8 +73,9 @@ func (RpmArchiver) readRpm(processingFunc func(*ArchiveHeader, map[string]interf
 			archiveHeader := NewArchiveHeader(cpioReader, archiveEntry.Name, archiveEntry.ModTime.Unix(), archiveEntry.Size)
 			err = processingFunc(archiveHeader, params)
 			if _, ok := params["rpmPkg"]; !ok {
+				modularityLabel := getModularityLabel(rpmFile)
 				params["rpmPkg"] = &RpmPkg{Name: rpmFile.Name(), Version: rpmFile.Version(), Release: rpmFile.Release(),
-					Epoch: rpmFile.Epoch(), Licenses: []string{rpmFile.License()}, Vendor: rpmFile.Vendor()}
+					Epoch: rpmFile.Epoch(), Licenses: []string{rpmFile.License()}, Vendor: rpmFile.Vendor(), ModularityLabel: modularityLabel}
 			}
 			if err != nil {
 				return err
@@ -84,11 +85,20 @@ func (RpmArchiver) readRpm(processingFunc func(*ArchiveHeader, map[string]interf
 	return nil
 }
 
+const (
+	RpmTagModularityLabel = 5096
+)
+
+func getModularityLabel(rpmFile *rpm.PackageFile) string {
+	return rpmFile.GetString(1, RpmTagModularityLabel)
+}
+
 type RpmPkg struct {
-	Name     string
-	Version  string
-	Release  string
-	Epoch    int
-	Licenses []string
-	Vendor   string
+	Name            string
+	Version         string
+	Release         string
+	Epoch           int
+	Licenses        []string
+	Vendor          string
+	ModularityLabel string
 }

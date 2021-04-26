@@ -22,4 +22,5 @@ func TestRpmArchiver(t *testing.T) {
 	assert.Equal(t, rpmPkg.Release, "1.fc24.remi.7.0")
 	assert.Equal(t, rpmPkg.Version, "0.4.11")
 	assert.Equal(t, rpmPkg.Name, "php-zstd-devel")
+	assert.Equal(t, rpmPkg.ModularityLabel, "")
 }
