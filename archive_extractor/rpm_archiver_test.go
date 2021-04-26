@@ -7,7 +7,7 @@ import (
 )
 
 func TestRpmArchiver(t *testing.T) {
-	za := &RpmArchvier{}
+	za := &RpmArchiver{}
 	funcParams := params()
 	if err := za.ExtractArchive("./fixtures/test.rpm", processingFunc, funcParams); err != nil {
 		fmt.Print(err.Error())
@@ -22,4 +22,5 @@ func TestRpmArchiver(t *testing.T) {
 	assert.Equal(t, rpmPkg.Release, "1.fc24.remi.7.0")
 	assert.Equal(t, rpmPkg.Version, "0.4.11")
 	assert.Equal(t, rpmPkg.Name, "php-zstd-devel")
+	assert.Equal(t, rpmPkg.ModularityLabel, "")
 }

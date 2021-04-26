@@ -3,16 +3,16 @@ package archive_extractor
 import (
 	"errors"
 	"fmt"
-	"github.com/chen-keinan/go-archive-extractor/utils"
+	"github.com/jfrog/go-archive-extractor/utils"
 	archive "github.com/gen2brain/go-unarr"
 	"io"
 )
 
-type SevenZipArchvier struct {
-}
+type SevenZipArchiver struct{}
 
-func (za SevenZipArchvier) ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error,
-	params map[string]interface{}) error {
+func (SevenZipArchiver) ExtractArchive(path string,
+	processingFunc func(*ArchiveHeader, map[string]interface{}) error, params map[string]interface{}) error {
+
 	r, err := archive.NewArchive(path)
 	if err != nil {
 		return err
