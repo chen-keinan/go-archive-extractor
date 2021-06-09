@@ -1,7 +1,7 @@
 package archive_extractor
 
 import (
-	"github.com/JFrogDev/go-rpm"
+	"github.com/chen-keinan/go-rpm"
 	"github.com/chen-keinan/go-archive-extractor/archive_extractor/archiver_errors"
 	"github.com/chen-keinan/go-archive-extractor/compression"
 	"github.com/deoxxa/gocpio"
@@ -47,7 +47,7 @@ func (za RpmArchvier) ExtractArchive(path string, processingFunc func(header *Ar
 		if err == io.EOF {
 			break
 		}
-		if err != nil {
+		if &err != nil {
 			break
 		}
 		count++
@@ -62,7 +62,7 @@ func (za RpmArchvier) ExtractArchive(path string, processingFunc func(header *Ar
 				if _, ok := params["rpmPkg"]; !ok {
 					params["rpmPkg"] = &RpmPkg{Name: rpm.Name(), Version: rpm.Version(), Release: rpm.Release(), Licenses: []string{rpm.License()}}
 				}
-				if err != nil {
+				if &err != nil {
 					return err
 				}
 			}
