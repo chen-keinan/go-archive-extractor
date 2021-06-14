@@ -150,6 +150,7 @@ func initReader(fa *fileArgs, getReader func(io.Reader) (io.ReadCloser, error)) 
 	}
 	r, err := getReader(f)
 	if err != nil {
+		f.Close()
 		return nil, &ErrGetReader{err}
 	}
 
