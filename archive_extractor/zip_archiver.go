@@ -3,6 +3,7 @@ package archive_extractor
 import (
 	"archive/zip"
 	"fmt"
+	"path/filepath"
 )
 
 type ZipArchvier struct {
@@ -10,12 +11,12 @@ type ZipArchvier struct {
 
 func (za ZipArchvier) ExtractArchive(path string) ([]*ArchiveHeader, error) {
 	headers := make([]*ArchiveHeader, 0)
-	r, err := zip.OpenReader(path)
+	r, err := zip.OpenReader(filepath.Clean(path))
 	if err != nil {
 		return nil, err
 	}
 	defer func() {
-		err := r.Close()
+		err = r.Close()
 		if err != nil {
 			fmt.Print(err.Error())
 		}

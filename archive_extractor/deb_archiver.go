@@ -6,6 +6,7 @@ import (
 	"github.com/blakesmith/ar"
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/chen-keinan/go-archive-extractor/utils"
 )
@@ -15,12 +16,12 @@ type DebArchvier struct {
 
 func (za DebArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	headers := make([]*ArchiveHeader, 0)
-	debFile, err := os.Open(path)
+	debFile, err := os.Open(filepath.Clean(path))
 	if err != nil {
 		return nil, err
 	}
 	defer func() {
-		err := debFile.Close()
+		err = debFile.Close()
 		if err != nil {
 			fmt.Print(err.Error())
 		}

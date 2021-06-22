@@ -8,6 +8,7 @@ import (
 	cpio "github.com/chen-keinan/gocpio"
 	"io"
 	"os"
+	"path/filepath"
 )
 
 type RpmArchvier struct {
@@ -15,11 +16,11 @@ type RpmArchvier struct {
 
 func (za RpmArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	headers := make([]*ArchiveHeader, 0)
-	rpm, err := rpm.OpenPackageFile(path)
+	rpm, err := rpm.OpenPackageFile(filepath.Clean(path))
 	if err != nil {
 		return nil, archiver_errors.New(err)
 	}
-	file, err := os.Open(path)
+	file, err := os.Open(filepath.Clean(path))
 	if err != nil {
 		return nil, err
 	}

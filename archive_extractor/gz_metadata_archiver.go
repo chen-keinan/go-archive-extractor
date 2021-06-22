@@ -5,6 +5,7 @@ import (
 	"github.com/chen-keinan/go-archive-extractor/archive_extractor/archiver_errors"
 	"github.com/chen-keinan/go-archive-extractor/compression"
 	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -13,12 +14,12 @@ type GzMetadataArchiver struct {
 
 func (ga GzMetadataArchiver) ExtractArchive(path string) ([]*ArchiveHeader, error) {
 	headers := make([]*ArchiveHeader, 0)
-	archiveFile, err := os.Open(path)
+	archiveFile, err := os.Open(filepath.Clean(path))
 	if err != nil {
 		return nil, err
 	}
 	defer func() {
-		err := archiveFile.Close()
+		err = archiveFile.Close()
 		if err != nil {
 			fmt.Print(err.Error())
 		}

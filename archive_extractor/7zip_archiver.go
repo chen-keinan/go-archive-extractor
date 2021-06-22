@@ -6,6 +6,7 @@ import (
 	"github.com/chen-keinan/go-archive-extractor/utils"
 	archive "github.com/gen2brain/go-unarr"
 	"io"
+	"path/filepath"
 )
 
 type SevenZipArchvier struct {
@@ -13,7 +14,7 @@ type SevenZipArchvier struct {
 
 func (za SevenZipArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	headers := make([]*ArchiveHeader, 0)
-	r, err := archive.NewArchive(path)
+	r, err := archive.NewArchive(filepath.Clean(path))
 	if err != nil {
 		return nil, err
 	}
@@ -22,7 +23,7 @@ func (za SevenZipArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 		return nil, err
 	}
 	defer func() {
-		err := r.Close()
+		err = r.Close()
 		if err != nil {
 			fmt.Print(err.Error())
 		}

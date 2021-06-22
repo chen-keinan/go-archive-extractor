@@ -8,6 +8,7 @@ import (
 	"github.com/chen-keinan/go-archive-extractor/utils"
 	"io"
 	"os"
+	"path/filepath"
 )
 
 type TarArchvier struct {
@@ -15,7 +16,7 @@ type TarArchvier struct {
 
 func (za TarArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	headers := make([]*ArchiveHeader, 0)
-	archiveFile, err := os.Open(path)
+	archiveFile, err := os.Open(filepath.Clean(path))
 	if err != nil {
 		return nil, err
 	}
@@ -28,7 +29,7 @@ func (za TarArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 		fileReader = archiveFile
 	}
 	defer func() {
-		err := fileReader.Close()
+		err = fileReader.Close()
 		if err != nil {
 			fmt.Print(err.Error())
 		}
