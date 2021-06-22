@@ -1,6 +1,7 @@
 package archive_extractor
 
 import (
+	"fmt"
 	"github.com/chen-keinan/go-archive-extractor/archive_extractor/archiver_errors"
 	"github.com/chen-keinan/go-archive-extractor/compression"
 	"os"
@@ -10,21 +11,26 @@ import (
 type GzMetadataArchiver struct {
 }
 
-func (ga GzMetadataArchiver) ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error,
-	params map[string]interface{}) error {
+func (ga GzMetadataArchiver) ExtractArchive(path string) ([]*ArchiveHeader, error) {
+	headers := make([]*ArchiveHeader, 0)
 	archiveFile, err := os.Open(path)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	defer archiveFile.Close()
+	defer func() {
+		err := archiveFile.Close()
+		if err != nil {
+			fmt.Print(err.Error())
+		}
+	}()
 	rc, err := compression.CreateCompression(path).GetReader(archiveFile)
 	if err != nil {
-		return archiver_errors.New(err)
+		return nil, archiver_errors.New(err)
 	}
-	archiveHeader := NewArchiveHeader(rc, "metadata", time.Now().Unix(), 0)
-	err = processingFunc(archiveHeader, params)
+	archiveHeader, err := NewArchiveHeader(rc, "metadata", time.Now().Unix(), 0)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	headers = append(headers, archiveHeader)
+	return headers, nil
 }

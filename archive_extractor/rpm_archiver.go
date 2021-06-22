@@ -1,10 +1,11 @@
 package archive_extractor
 
 import (
-	"github.com/chen-keinan/go-rpm"
+	"fmt"
 	"github.com/chen-keinan/go-archive-extractor/archive_extractor/archiver_errors"
 	"github.com/chen-keinan/go-archive-extractor/compression"
-	"github.com/deoxxa/gocpio"
+	"github.com/chen-keinan/go-rpm"
+	cpio "github.com/chen-keinan/gocpio"
 	"io"
 	"os"
 )
@@ -12,15 +13,15 @@ import (
 type RpmArchvier struct {
 }
 
-func (za RpmArchvier) ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error,
-	params map[string]interface{}) error {
+func (za RpmArchvier) Extract(path string) ([]*ArchiveHeader, error) {
+	headers := make([]*ArchiveHeader, 0)
 	rpm, err := rpm.OpenPackageFile(path)
 	if err != nil {
-		return archiver_errors.New(err)
+		return nil, archiver_errors.New(err)
 	}
 	file, err := os.Open(path)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer file.Close()
 
@@ -30,16 +31,21 @@ func (za RpmArchvier) ExtractArchive(path string, processingFunc func(header *Ar
 
 	_, err = file.ReadAt(archiveHead, int64(headerEnd))
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	//rewind to start of the file
 	file.Seek(int64(headerEnd), 0)
 	fileReader, err := compression.CreateCompressionFromBytes(archiveHead).GetReader(file)
 	if err != nil || fileReader == nil {
-		return archiver_errors.New(err)
+		return nil, archiver_errors.New(err)
 	}
-	defer fileReader.Close()
+	defer func() {
+		err := fileReader.Close()
+		if err != nil {
+			fmt.Print(err.Error())
+		}
+	}()
 	rc := cpio.NewReader(fileReader)
 	var count = 0
 	for {
@@ -47,7 +53,7 @@ func (za RpmArchvier) ExtractArchive(path string, processingFunc func(header *Ar
 		if err == io.EOF {
 			break
 		}
-		if &err != nil {
+		if err != nil {
 			break
 		}
 		count++
@@ -57,24 +63,22 @@ func (za RpmArchvier) ExtractArchive(path string, processingFunc func(header *Ar
 		}
 		if archiveEntry.Mode != cpio.TYPE_DIR {
 			if archiveEntry != nil {
-				archiveHeader := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.Mtime, archiveEntry.Size)
-				err = processingFunc(archiveHeader, params)
-				if _, ok := params["rpmPkg"]; !ok {
-					params["rpmPkg"] = &RpmPkg{Name: rpm.Name(), Version: rpm.Version(), Release: rpm.Release(), Licenses: []string{rpm.License()}}
+				archiveHeader, err := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.Mtime, archiveEntry.Size)
+				if err != nil {
+					return nil, err
 				}
-				if &err != nil {
-					return err
-				}
+				archiveHeader.PkgMeta = RpmMeta(rpm)
+				headers = append(headers, archiveHeader)
 			}
 		}
 	}
-
-	return nil
+	return headers, nil
 }
-
-type RpmPkg struct {
-	Name     string
-	Version  string
-	Release  string
-	Licenses []string
+func RpmMeta(data *rpm.PackageFile) map[string]interface{} {
+	return map[string]interface{}{
+		"Name":     data.Name(),
+		"Version":  data.Version(),
+		"Release":  data.Release(),
+		"Licenses": data.License(),
+	}
 }

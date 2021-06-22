@@ -31,7 +31,5 @@ func processingFunc(header *ArchiveHeader, params map[string]interface{}) error 
 	archiveData.Name = header.Name
 	archiveData.ModTime = header.ModTime
 	archiveData.Size = header.Size
-	archiveData.IsFolder = header.IsFolder
-	archiveData.ArchiveReader = header.ArchiveReader
 	return nil
 }

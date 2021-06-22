@@ -8,14 +8,15 @@ import (
 
 func TestDebArchiver(t *testing.T) {
 	za := &DebArchvier{}
-	funcParams := params()
-	if err := za.ExtractArchive("./fixtures/test.deb", processingFunc, funcParams); err != nil {
+	var headers []*ArchiveHeader
+	var err error
+	if headers, err = za.Extract("./fixtures/test.deb"); err != nil {
 		fmt.Print(err.Error())
 		t.Fatal(err)
 	}
-	ad := funcParams["archiveData"].(*ArchiveData)
-	assert.Equal(t, ad.Name, "data.tar.xz")
-	assert.Equal(t, ad.ModTime, int64(1485714631))
-	assert.Equal(t, ad.IsFolder, false)
-	assert.Equal(t, ad.Size, int64(42284))
+	assert.Equal(t, headers[0].Name, "debian-binary")
+	assert.Equal(t, headers[0].ModTime, int64(1485714631))
+	assert.Equal(t, headers[0].Size, int64(4))
+	assert.Equal(t, headers[0].Sha1, "7959c969e092f2a5a8604e2287807ac5b1b384ad")
+	assert.Equal(t, headers[0].Sha2, "d526eb4e878a23ef26ae190031b4efd2d58ed66789ac049ea3dbaf74c9df7402")
 }

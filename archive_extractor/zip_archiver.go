@@ -2,31 +2,37 @@ package archive_extractor
 
 import (
 	"archive/zip"
+	"fmt"
 )
 
 type ZipArchvier struct {
 }
 
-func (za ZipArchvier) ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error,
-	params map[string]interface{}) error {
+func (za ZipArchvier) ExtractArchive(path string) ([]*ArchiveHeader, error) {
+	headers := make([]*ArchiveHeader, 0)
 	r, err := zip.OpenReader(path)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	defer r.Close()
+	defer func() {
+		err := r.Close()
+		if err != nil {
+			fmt.Print(err.Error())
+		}
+	}()
 	for _, archiveEntry := range r.File {
 		rc, err := archiveEntry.Open()
 		if err != nil {
 			rc.Close()
-			return err
+			return nil, err
 		}
-		archiveHeader := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.ModTime().Unix(), archiveEntry.FileInfo().Size())
-		err = processingFunc(archiveHeader, params)
+		archiveHeader, err := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.ModTime().Unix(), archiveEntry.FileInfo().Size())
 		if err != nil {
 			rc.Close()
-			return err
+			return nil, err
 		}
 		rc.Close()
+		headers = append(headers, archiveHeader)
 	}
-	return nil
+	return headers, nil
 }

@@ -11,34 +11,42 @@ import (
 type SevenZipArchvier struct {
 }
 
-func (za SevenZipArchvier) ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error,
-	params map[string]interface{}) error {
+func (za SevenZipArchvier) Extract(path string) ([]*ArchiveHeader, error) {
+	headers := make([]*ArchiveHeader, 0)
 	r, err := archive.NewArchive(path)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	allFiles, err := r.List()
 	if err != nil {
-		return err
+		return nil, err
 	}
-	defer r.Close()
+	defer func() {
+		err := r.Close()
+		if err != nil {
+			fmt.Print(err.Error())
+		}
+	}()
 	if err == nil {
 		for _, archiveEntry := range allFiles {
 			err := r.EntryFor(archiveEntry)
 			if err != nil {
-				return err
+				return nil, err
 			}
 			if !utils.IsFolder(archiveEntry) {
 				rc := &SevenZipReader{Archive: r, Size: r.Size()}
-				archiveHeader := NewArchiveHeader(rc, r.Name(), r.ModTime().Unix(), int64(r.Size()))
-				err = processingFunc(archiveHeader, params)
+				archiveHeader, err := NewArchiveHeader(rc, r.Name(), r.ModTime().Unix(), int64(r.Size()))
 				if err != nil {
-					return err
+					return nil, err
+				}
+				headers = append(headers, archiveHeader)
+				if err != nil {
+					return nil, err
 				}
 			}
 		}
 	}
-	return nil
+	return headers, nil
 }
 
 type SevenZipReader struct {

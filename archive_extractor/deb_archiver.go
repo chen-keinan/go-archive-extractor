@@ -13,16 +13,21 @@ import (
 type DebArchvier struct {
 }
 
-func (za DebArchvier) ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error,
-	params map[string]interface{}) error {
+func (za DebArchvier) Extract(path string) ([]*ArchiveHeader, error) {
+	headers := make([]*ArchiveHeader, 0)
 	debFile, err := os.Open(path)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	defer debFile.Close()
+	defer func() {
+		err := debFile.Close()
+		if err != nil {
+			fmt.Print(err.Error())
+		}
+	}()
 	rc := ar.NewReader(debFile)
 	if rc == nil {
-		return errors.New(fmt.Sprintf("Failed to open deb file : %s", path))
+		return nil, errors.New(fmt.Sprintf("Failed to open deb file : %s", path))
 	}
 	for {
 		archiveEntry, err := rc.Next()
@@ -30,18 +35,18 @@ func (za DebArchvier) ExtractArchive(path string, processingFunc func(header *Ar
 			if err == io.EOF {
 				break
 			}
-			return err
+			return nil, err
 		}
 		if archiveEntry == nil {
-			return errors.New(fmt.Sprintf("Failed to open file : %s", path))
+			return nil, errors.New(fmt.Sprintf("Failed to open file : %s", path))
 		}
 		if !utils.IsFolder(archiveEntry.Name) {
-			archiveHeader := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.ModTime.Unix(), archiveEntry.Size)
-			err = processingFunc(archiveHeader, params)
+			archiveHeader, err := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.ModTime.Unix(), archiveEntry.Size)
 			if err != nil {
-				return err
+				return nil, err
 			}
+			headers = append(headers, archiveHeader)
 		}
 	}
-	return nil
+	return headers, nil
 }

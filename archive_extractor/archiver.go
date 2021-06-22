@@ -6,17 +6,22 @@ import (
 )
 
 type Archiver interface {
-	ExtractArchive(path string, processingFunc func(header *ArchiveHeader, params map[string]interface{}) error, params map[string]interface{}) error
+	Extract(path string) ([]ArchiveHeader, error)
 }
 
 type ArchiveHeader struct {
-	ArchiveReader io.Reader
-	IsFolder      bool
-	Name          string
-	ModTime       int64
-	Size          int64
+	Name    string
+	ModTime int64
+	Size    int64
+	Sha1    string
+	Sha2    string
+	PkgMeta map[string]interface{}
 }
 
-func NewArchiveHeader(archiveReader io.Reader, name string, modTime int64, size int64) *ArchiveHeader {
-	return &ArchiveHeader{ArchiveReader: archiveReader, IsFolder: utils.IsFolder(name), Name: name, ModTime: modTime, Size: size}
+func NewArchiveHeader(archiveReader io.Reader, name string, modTime int64, size int64) (*ArchiveHeader, error) {
+	b, err := io.ReadAll(archiveReader)
+	if err != nil {
+		return nil, err
+	}
+	return &ArchiveHeader{Sha1: utils.NewSHA1(b), Sha2: utils.NewSHA2(b), Name: name, ModTime: modTime, Size: size}, nil
 }
