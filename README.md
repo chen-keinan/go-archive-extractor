@@ -36,7 +36,7 @@ and invoke advance processing function while iterating archive headers
 
 ```
 func main() {
-	 zip := New(Zip)
+    zip := New(Zip)
     headers, err = zip.Extract("common.zip");
     if err != nil {
         fmt.Print(err.Error())
