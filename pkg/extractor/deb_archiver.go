@@ -10,14 +10,14 @@ import (
 	"github.com/chen-keinan/go-archive-extractor/utils"
 )
 
-//DebArchvier object
-type DebArchvier struct {
+//debArchvier object
+type debArchvier struct {
 }
 
 //Extract extract deb archive
 //accept deb file path
 //return file header metadata
-func (za DebArchvier) Extract(path string) ([]*ArchiveHeader, error) {
+func (za debArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	headers := make([]*ArchiveHeader, 0)
 	debFile, err := os.Open(filepath.Clean(path))
 	if err != nil {

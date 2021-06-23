@@ -7,7 +7,7 @@ import (
 )
 
 func TestRpmArchiver(t *testing.T) {
-	za := &RpmArchvier{}
+	za := New(Rpm)
 	var headers []*ArchiveHeader
 	var err error
 	if headers, err = za.Extract("./fixtures/test.rpm"); err != nil {

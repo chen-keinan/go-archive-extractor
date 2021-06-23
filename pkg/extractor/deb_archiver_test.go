@@ -7,7 +7,7 @@ import (
 )
 
 func TestDebArchiver(t *testing.T) {
-	za := &DebArchvier{}
+	za := New(Deb)
 	var headers []*ArchiveHeader
 	var err error
 	if headers, err = za.Extract("./fixtures/test.deb"); err != nil {

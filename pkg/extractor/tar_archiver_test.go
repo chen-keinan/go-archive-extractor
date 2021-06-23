@@ -9,7 +9,7 @@ import (
 )
 
 func TestTarUnexpectedEofArchiver(t *testing.T) {
-	za := &TarArchvier{}
+	za := New(Tar)
 	var err error
 	if _, err = za.Extract("./fixtures/test.deb"); err != nil {
 		fmt.Print(err.Error() + "\n")
@@ -18,7 +18,7 @@ func TestTarUnexpectedEofArchiver(t *testing.T) {
 }
 
 func TestTarArchiver(t *testing.T) {
-	za := &TarArchvier{}
+	za := New(Tar)
 	var headers []*ArchiveHeader
 	var err error
 	if headers, err = za.Extract("./fixtures/test.tar.gz"); err != nil {

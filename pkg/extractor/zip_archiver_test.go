@@ -9,7 +9,7 @@ import (
 )
 
 func TestZipUnexpectedEofArchiver(t *testing.T) {
-	za := &ZipArchvier{}
+	za := New(Zip)
 	if _, err := za.Extract("./fixtures/test.deb"); err != nil {
 		fmt.Print(err.Error() + "\n")
 		assert.Equal(t, "zip: not a valid zip file", strings.Trim(err.Error(), ""))
@@ -17,7 +17,7 @@ func TestZipUnexpectedEofArchiver(t *testing.T) {
 }
 
 func TestZipArchiver(t *testing.T) {
-	za := &ZipArchvier{}
+	za := New(Zip)
 	var headers []*ArchiveHeader
 	var err error
 	if headers, err = za.Extract("./fixtures/test.zip"); err != nil {

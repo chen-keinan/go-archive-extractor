@@ -6,14 +6,14 @@ import (
 	"path/filepath"
 )
 
-//ZipArchvier object
-type ZipArchvier struct {
+//zipArchvier object
+type zipArchvier struct {
 }
 
 //Extract extract zip archive
 //accept zip file path
 //return file header metadata
-func (za ZipArchvier) Extract(path string) ([]*ArchiveHeader, error) {
+func (za zipArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	headers := make([]*ArchiveHeader, 0)
 	r, err := zip.OpenReader(filepath.Clean(path))
 	if err != nil {

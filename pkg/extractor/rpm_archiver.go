@@ -11,14 +11,14 @@ import (
 	"path/filepath"
 )
 
-//RpmArchvier object
-type RpmArchvier struct {
+//rpmArchvier object
+type rpmArchvier struct {
 }
 
 //Extract extract rpm archive
 //accept rpm file path
 //return file header metadata
-func (za RpmArchvier) Extract(path string) ([]*ArchiveHeader, error) {
+func (za rpmArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	headers := make([]*ArchiveHeader, 0)
 	rpm, err := rpm.OpenPackageFile(filepath.Clean(path))
 	if err != nil {
@@ -65,7 +65,7 @@ func (za RpmArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	return headers, nil
 }
 
-func (za RpmArchvier) extractHeaders(rc *cpio.Reader, count int, rpm *rpm.PackageFile, headers []*ArchiveHeader) ([]*ArchiveHeader, []*ArchiveHeader, error) {
+func (za rpmArchvier) extractHeaders(rc *cpio.Reader, count int, rpm *rpm.PackageFile, headers []*ArchiveHeader) ([]*ArchiveHeader, []*ArchiveHeader, error) {
 	for {
 		archiveEntry, err := rc.Next()
 		if err == io.EOF {

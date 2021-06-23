@@ -11,14 +11,14 @@ import (
 	"path/filepath"
 )
 
-//TarArchvier object
-type TarArchvier struct {
+//tarArchvier object
+type tarArchvier struct {
 }
 
 //Extract extract tar archive
 //accept tar file path
 //return file header metadata
-func (za TarArchvier) Extract(path string) ([]*ArchiveHeader, error) {
+func (za tarArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	headers := make([]*ArchiveHeader, 0)
 	archiveFile, err := os.Open(filepath.Clean(path))
 	if err != nil {
@@ -50,7 +50,7 @@ func (za TarArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	return headers, nil
 }
 
-func (za TarArchvier) extractHeaders(rc *tar.Reader, headers []*ArchiveHeader) ([]*ArchiveHeader, []*ArchiveHeader, error) {
+func (za tarArchvier) extractHeaders(rc *tar.Reader, headers []*ArchiveHeader) ([]*ArchiveHeader, []*ArchiveHeader, error) {
 	for {
 		archiveEntry, err := rc.Next()
 		if err == io.EOF {

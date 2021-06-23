@@ -5,9 +5,21 @@ import (
 	"io"
 )
 
+//Archive enum
+type Archive int
+
+const (
+	Zip Archive = iota
+	Tar
+	SevenZip
+	Deb
+	Rpm
+	GzMetadata
+)
+
 //Archiver interface
 type Archiver interface {
-	Extract(path string) ([]ArchiveHeader, error)
+	Extract(path string) ([]*ArchiveHeader, error)
 }
 
 //ArchiveHeader archive headers object
@@ -29,4 +41,24 @@ func NewArchiveHeader(archiveReader io.Reader, name string, modTime int64, size 
 		return nil, err
 	}
 	return &ArchiveHeader{Sha1: utils.NewSHA1(b), Sha2: utils.NewSHA2(b), Name: name, ModTime: modTime, Size: size}, nil
+}
+
+//New instantiate new archive
+func New(arc Archive) Archiver {
+	switch arc {
+	case Zip:
+		return new(zipArchvier)
+	case Rpm:
+		return new(rpmArchvier)
+	case Deb:
+		return new(debArchvier)
+	case SevenZip:
+		return new(sevenZipArchvier)
+	case Tar:
+		return new(tarArchvier)
+	case GzMetadata:
+		return new(gzMetadataArchiver)
+	default:
+		return new(zipArchvier)
+	}
 }

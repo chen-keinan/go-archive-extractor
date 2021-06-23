@@ -1,53 +1,46 @@
 # go-archive-extractor
 
 The archive-extractor is a library and set of tools
-that can extract many archive types (tar , zip , rpm ,deb, 7zip) with supported compressions (bz2,gz,Z,infl,xp3,xz) on tar files
+that can extract many various archive types with various tar compressions
 and invoke advance processing function while iterating archive headers
 
-Example:
 
-- Define advance params to be uses in advance processing method :
- ```
-type ArchiveData struct {
-	ArchiveReader io.Reader
-	IsFolder      bool
-	Name          string
-	ModTime       int64
-	Size          int64
-}
+* [Supported Archives](#supported-archives)
+* [Supported Tar Compression](#supported-tar-compression)
+* [Usage](#usage)
+
+
+
+
+## Supported Archives
+ - tar
+ - zip
+ - rpm
+ - deb
+ - 7zip
+
+## Supported Tar Compression
+ - bz2
+ - gz
+ - Z 
+ - infla
+ - xp3
+ - xz
+
+## Usage
 ```
+    zip := New(Zip)
+    headers, err = zip.Extract("common.zip");
+    fmt.Print(headers)
 ```
-func params() map[string]interface{} {
-	return map[string]interface{}{
-		"archveData": &ArchiveData{},
-	}
-}
-```
-- Define advance processing function to be invoke during archive extraction :
-```
-func processingFunc(header *ArchiveHeader, params map[string]interface{}) error {
-	if len(params) == 0 {
-		return errors.New("Advance processing params are missing")
-	}
-	var ok bool
-	var archiveData *ArchiveData
-	if archiveData, ok = params["archiveData"].(*ArchiveData); !ok {
-		return errors.New("Advance processing archveData param is missing")
-	}
-	archiveData.Name = header.Name
-	archiveData.ModTime=header.ModTime
-	archiveData.Size=header.Size
-	archiveData.IsFolder=header.IsFolder
- 	fmt.Print(archiveData)
-	return nil
-}
-```
-- create archive extractor type and pass advance processing function and params :
+
 ```
 func main() {
-	za := &ZipArchvier{}
-	if err:=za.ExtractArchive("/User/Name/file.zip",processingFunc,params()); err != nil{
- 		fmt.Print(err)
- 		}
+	 zip := New(Zip)
+    headers, err = zip.Extract("common.zip");
+    if err != nil {
+        fmt.Print(err.Error())
+    }
+    fmt.Print(headers)
 }
 ```

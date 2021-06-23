@@ -7,7 +7,7 @@ import (
 )
 
 func Test7ZipArchiver(t *testing.T) {
-	za := &SevenZipArchvier{}
+	za := New(SevenZip)
 	var headers []*ArchiveHeader
 	var err error
 	if headers, err = za.Extract("./fixtures/test.7z"); err != nil {
