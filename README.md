@@ -7,7 +7,11 @@ and invoke advance processing function while iterating archive headers
 
 * [Supported Archives](#supported-archives)
 * [Supported Tar Compression](#supported-tar-compression)
-* [Usage](#usage)
+* [Zip Usage](#zip-usage)
+* [Tar Usage](#tar-usage)
+* [Debian Usage](#debian-usage)
+* [RPM Usage](#rpm-usage)
+* [7z Usage](#7z-usage)
 
 
 
@@ -27,16 +31,40 @@ and invoke advance processing function while iterating archive headers
  - xp3
  - xz
 
-## Usage
+## Zip Usage
 ```
-    zip := New(Zip)
+    zip := extractor.New(extractor.Zip)
     headers, err = zip.Extract("common.zip");
+    fmt.Print(headers)
+```
+## Tar Usage
+```
+    tar := extractor.New(extractor.Tar)
+    headers, err = tar.Extract("common.tar");
+    fmt.Print(headers)
+```
+## Debian Usage
+```
+    deb := extractor.New(extractor.Deb)
+    headers, err = deb.Extract("common.deb");
+    fmt.Print(headers)
+```
+## RPM Usage
+```
+    rpm := extractor.New(extractor.Rpm)
+    headers, err = rpm.Extract("common.rpm");
+    fmt.Print(headers)
+```
+## 7z Usage
+```
+    sevenZip := extractor.New(extractor.SevenZip)
+    headers, err = sevenZip.Extract("common.7z");
     fmt.Print(headers)
 ```
 
 ```
 func main() {
-    zip := New(Zip)
+    zip := extractor.New(extractor.Zip)
     headers, err = zip.Extract("common.zip");
     if err != nil {
         fmt.Print(err.Error())
