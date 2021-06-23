@@ -1,4 +1,4 @@
-package archive_extractor
+package extractor
 
 import (
 	"errors"
@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 )
 
+//SevenZipArchvier object
 type SevenZipArchvier struct {
 }
 
@@ -53,11 +54,14 @@ func (za SevenZipArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	return headers, nil
 }
 
+//SevenZipReader object
 type SevenZipReader struct {
 	Archive *archive.Archive
 	Size    int
 }
 
+//Read read 7zip data and check if it valid , accept 7zip byte
+// return error
 func (a *SevenZipReader) Read(p []byte) (n int, err error) {
 	if a.Size <= 0 {
 		return 0, io.EOF

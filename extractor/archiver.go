@@ -1,4 +1,4 @@
-package archive_extractor
+package extractor
 
 import (
 	"github.com/chen-keinan/go-archive-extractor/utils"

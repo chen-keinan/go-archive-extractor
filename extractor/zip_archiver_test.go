@@ -1,4 +1,4 @@
-package archive_extractor
+package extractor
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 
 func TestZipUnexpectedEofArchiver(t *testing.T) {
 	za := &ZipArchvier{}
-	if _, err := za.ExtractArchive("./fixtures/test.deb"); err != nil {
+	if _, err := za.Extract("./fixtures/test.deb"); err != nil {
 		fmt.Print(err.Error() + "\n")
 		assert.Equal(t, "zip: not a valid zip file", strings.Trim(err.Error(), ""))
 	}
@@ -20,7 +20,7 @@ func TestZipArchiver(t *testing.T) {
 	za := &ZipArchvier{}
 	var headers []*ArchiveHeader
 	var err error
-	if headers, err = za.ExtractArchive("./fixtures/test.zip"); err != nil {
+	if headers, err = za.Extract("./fixtures/test.zip"); err != nil {
 		fmt.Print(err.Error())
 		t.Fatal(err)
 	}

@@ -1,14 +1,15 @@
-package archive_extractor
+package extractor
 
 import (
 	"fmt"
-	"github.com/chen-keinan/go-archive-extractor/archive_extractor/archiver_errors"
 	"github.com/chen-keinan/go-archive-extractor/compression"
+	"github.com/chen-keinan/go-archive-extractor/extractor/archiver_errors"
 	"os"
 	"path/filepath"
 	"time"
 )
 
+//GzMetadataArchiver object
 type GzMetadataArchiver struct {
 }
 

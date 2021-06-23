@@ -1,9 +1,9 @@
-package archive_extractor
+package extractor
 
 import (
 	"fmt"
-	"github.com/chen-keinan/go-archive-extractor/archive_extractor/archiver_errors"
 	"github.com/chen-keinan/go-archive-extractor/compression"
+	"github.com/chen-keinan/go-archive-extractor/extractor/archiver_errors"
 	"github.com/chen-keinan/go-rpm"
 	cpio "github.com/chen-keinan/gocpio"
 	"io"
@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 )
 
+//RpmArchvier object
 type RpmArchvier struct {
 }
 
@@ -27,7 +28,11 @@ func (za RpmArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
+	defer func() {
+		if err = file.Close(); err != nil {
+			fmt.Print(err.Error())
+		}
+	}()
 
 	//Read content of cpio archive which starts after headers
 	headerEnd := rpm.Headers[1].End
@@ -39,7 +44,10 @@ func (za RpmArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	}
 
 	//rewind to start of the file
-	file.Seek(int64(headerEnd), 0)
+	_, err = file.Seek(int64(headerEnd), 0)
+	if err != nil {
+		return nil, err
+	}
 	fileReader, err := compression.CreateCompressionFromBytes(archiveHead).GetReader(file)
 	if err != nil || fileReader == nil {
 		return nil, archiver_errors.New(err)
@@ -78,6 +86,9 @@ func (za RpmArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	}
 	return headers, nil
 }
+
+//RpmMeta return rpm metadata as key/value
+// accept rpm headers
 func RpmMeta(data *rpm.PackageFile) map[string]interface{} {
 	return map[string]interface{}{
 		"Name":     data.Name(),

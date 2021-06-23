@@ -1,16 +1,17 @@
-package archive_extractor
+package extractor
 
 import (
 	"archive/tar"
 	"fmt"
-	"github.com/chen-keinan/go-archive-extractor/archive_extractor/archiver_errors"
 	"github.com/chen-keinan/go-archive-extractor/compression"
+	"github.com/chen-keinan/go-archive-extractor/extractor/archiver_errors"
 	"github.com/chen-keinan/go-archive-extractor/utils"
 	"io"
 	"os"
 	"path/filepath"
 )
 
+//TarArchvier object
 type TarArchvier struct {
 }
 
@@ -23,7 +24,11 @@ func (za TarArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer archiveFile.Close()
+	defer func() {
+		if err = archiveFile.Close(); err != nil {
+			fmt.Print(err.Error())
+		}
+	}()
 	fileReader, err := compression.CreateCompression(path).GetReader(archiveFile)
 	if err != nil {
 		return nil, archiver_errors.New(err)

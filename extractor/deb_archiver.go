@@ -1,4 +1,4 @@
-package archive_extractor
+package extractor
 
 import (
 	"errors"
@@ -11,6 +11,7 @@ import (
 	"github.com/chen-keinan/go-archive-extractor/utils"
 )
 
+//DebArchvier object
 type DebArchvier struct {
 }
 
