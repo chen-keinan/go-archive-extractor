@@ -14,7 +14,6 @@ const (
 	SevenZip
 	Deb
 	Rpm
-	GzMetadata
 )
 
 //Archiver interface
@@ -56,8 +55,6 @@ func New(arc Archive) Archiver {
 		return new(sevenZipArchvier)
 	case Tar:
 		return new(tarArchvier)
-	case GzMetadata:
-		return new(gzMetadataArchiver)
 	default:
 		return new(zipArchvier)
 	}

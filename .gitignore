@@ -29,3 +29,5 @@
 
 #intelij
 *.iml
+coverage.md
+coverage.html
