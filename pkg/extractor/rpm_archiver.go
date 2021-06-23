@@ -2,8 +2,8 @@ package extractor
 
 import (
 	"fmt"
-	"github.com/chen-keinan/go-archive-extractor/compression"
-	"github.com/chen-keinan/go-archive-extractor/extractor/aerrors"
+	compression2 "github.com/chen-keinan/go-archive-extractor/pkg/compression"
+	aerrors2 "github.com/chen-keinan/go-archive-extractor/pkg/extractor/aerrors"
 	"github.com/chen-keinan/go-rpm"
 	cpio "github.com/chen-keinan/gocpio"
 	"io"
@@ -22,7 +22,7 @@ func (za RpmArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	headers := make([]*ArchiveHeader, 0)
 	rpm, err := rpm.OpenPackageFile(filepath.Clean(path))
 	if err != nil {
-		return nil, aerrors.New(err)
+		return nil, aerrors2.New(err)
 	}
 	file, err := os.Open(filepath.Clean(path))
 	if err != nil {
@@ -46,9 +46,9 @@ func (za RpmArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	if err != nil {
 		return nil, err
 	}
-	fileReader, err := compression.CreateCompressionFromBytes(archiveHead).GetReader(file)
+	fileReader, err := compression2.CreateCompressionFromBytes(archiveHead).GetReader(file)
 	if err != nil || fileReader == nil {
-		return nil, aerrors.New(err)
+		return nil, aerrors2.New(err)
 	}
 	defer func() {
 		err = fileReader.Close()

@@ -2,8 +2,8 @@ package extractor
 
 import (
 	"fmt"
-	"github.com/chen-keinan/go-archive-extractor/compression"
-	"github.com/chen-keinan/go-archive-extractor/extractor/aerrors"
+	compression2 "github.com/chen-keinan/go-archive-extractor/pkg/compression"
+	aerrors2 "github.com/chen-keinan/go-archive-extractor/pkg/extractor/aerrors"
 	"os"
 	"path/filepath"
 	"time"
@@ -28,9 +28,9 @@ func (ga GzMetadataArchiver) Extract(path string) ([]*ArchiveHeader, error) {
 			fmt.Print(err.Error())
 		}
 	}()
-	rc, err := compression.CreateCompression(path).GetReader(archiveFile)
+	rc, err := compression2.CreateCompression(path).GetReader(archiveFile)
 	if err != nil {
-		return nil, aerrors.New(err)
+		return nil, aerrors2.New(err)
 	}
 	archiveHeader, err := NewArchiveHeader(rc, "metadata", time.Now().Unix(), 0)
 	if err != nil {

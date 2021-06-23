@@ -3,8 +3,8 @@ package extractor
 import (
 	"archive/tar"
 	"fmt"
-	"github.com/chen-keinan/go-archive-extractor/compression"
-	"github.com/chen-keinan/go-archive-extractor/extractor/aerrors"
+	compression2 "github.com/chen-keinan/go-archive-extractor/pkg/compression"
+	aerrors2 "github.com/chen-keinan/go-archive-extractor/pkg/extractor/aerrors"
 	"github.com/chen-keinan/go-archive-extractor/utils"
 	"io"
 	"os"
@@ -29,9 +29,9 @@ func (za TarArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 			fmt.Print(err.Error())
 		}
 	}()
-	fileReader, err := compression.CreateCompression(path).GetReader(archiveFile)
+	fileReader, err := compression2.CreateCompression(path).GetReader(archiveFile)
 	if err != nil {
-		return nil, aerrors.New(err)
+		return nil, aerrors2.New(err)
 	}
 	if fileReader == nil {
 		fileReader = archiveFile
