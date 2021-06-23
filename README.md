@@ -8,7 +8,7 @@ The archive-extractor is an open-source library for extracting various archive t
 
 it returns archive headers metadata (name,size,timestamp,sha1 and sha256).
 
-it also support  diffrent tar compressions.
+it also support  diffrent types of tar compressions.
 
 
 * [Supported Archives](#supported-archives)
