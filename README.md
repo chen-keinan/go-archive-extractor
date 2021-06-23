@@ -4,9 +4,9 @@
 [![Gitter](https://badges.gitter.im/beacon-sec/community.svg)](https://gitter.im/beacon-sec/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 # go-archive-extractor
 
-The archive-extractor is a library and set of tools
-that can extract many various archive types with various tar compressions
-and invoke advance processing function while iterating archive headers
+The archive-extractor is an open-source library for extracting various archive types.
+it returns archive headers metadata (name,size,timestamp,sha1 and sha256)
+it also support  diffrent tar compressions.
 
 
 * [Supported Archives](#supported-archives)
