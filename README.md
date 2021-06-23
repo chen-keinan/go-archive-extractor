@@ -11,11 +11,7 @@ and invoke advance processing function while iterating archive headers
 
 * [Supported Archives](#supported-archives)
 * [Supported Tar Compression](#supported-tar-compression)
-* [Zip Usage](#zip-usage)
-* [Tar Usage](#tar-usage)
-* [Debian Usage](#debian-usage)
-* [RPM Usage](#rpm-usage)
-* [7z Usage](#7z-usage)
+* [Usage](#usage)
 
 
 
@@ -35,31 +31,33 @@ and invoke advance processing function while iterating archive headers
  - xp3
  - xz
 
-## Zip Usage
+## Usage
+
+### Zip Usage
 ```
     zip := extractor.New(extractor.Zip)
     headers, err = zip.Extract("common.zip");
     fmt.Print(headers)
 ```
-## Tar Usage
+### Tar Usage
 ```
     tar := extractor.New(extractor.Tar)
     headers, err = tar.Extract("common.tar");
     fmt.Print(headers)
 ```
-## Debian Usage
+### Debian Usage
 ```
     deb := extractor.New(extractor.Deb)
     headers, err = deb.Extract("common.deb");
     fmt.Print(headers)
 ```
-## RPM Usage
+### RPM Usage
 ```
     rpm := extractor.New(extractor.Rpm)
     headers, err = rpm.Extract("common.rpm");
     fmt.Print(headers)
 ```
-## 7z Usage
+### 7z Usage
 ```
     sevenZip := extractor.New(extractor.SevenZip)
     headers, err = sevenZip.Extract("common.7z");
