@@ -1,7 +1,6 @@
 package extractor
 
 import (
-	"errors"
 	"fmt"
 	"github.com/chen-keinan/go-archive-extractor/utils"
 	archive "github.com/gen2brain/go-unarr"
@@ -77,7 +76,7 @@ func (a *SevenZipReader) Read(p []byte) (n int, err error) {
 	}
 	copied := copy(p, b)
 	if copied != n {
-		return 0, errors.New(fmt.Sprintf("copy arrays failed, copied only %v from %v bytes", copied, n))
+		return 0, fmt.Errorf("copy arrays failed, copied only %v from %v bytes", copied, n)
 	}
 	a.Size -= n
 	return n, nil

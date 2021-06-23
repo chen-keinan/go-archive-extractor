@@ -14,13 +14,20 @@ import (
 )
 
 const (
-	BZ2   = ".bz2"
-	GZ    = ".gz"
-	TGZ   = ".tgz"
-	LZW   = ".Z"
-	INFL  = ".infl"
+	//BZ2 const
+	BZ2 = ".bz2"
+	//GZ const
+	GZ = ".gz"
+	//TGZ const
+	TGZ = ".tgz"
+	//LZW const
+	LZW = ".Z"
+	//INFL const
+	INFL = ".infl"
+	//Zlibe const
 	Zlibe = ".xp3"
-	Xz    = ".xz"
+	//Xz const
+	Xz = ".xz"
 
 	//Here comes the magic
 	gzipID1  = 0x1f
@@ -29,8 +36,8 @@ const (
 	bzip2ID2 = 0x5a
 )
 
-var LZMA_alone_magic = []byte{0x5d, 0x00, 0x00}
-var XZ_magic = []byte{0xfd, 0x37, 0x7a}
+var lZMAAloneMagic = []byte{0x5d, 0x00, 0x00}
+var xzMagic = []byte{0xfd, 0x37, 0x7a}
 
 //Compression interface
 type Compression interface {
@@ -71,10 +78,11 @@ func CreateCompressionFromBytes(magicBytes []byte) Compression {
 	if magicBytes[0] == bzip2ID1 && magicBytes[1] == bzip2ID2 {
 		return new(Bzip2)
 	}
-	if bytes.Equal(magicBytes[:3], XZ_magic) {
+	if bytes.Equal(magicBytes[:3], xzMagic) {
 		return new(XZ)
 	}
-	if bytes.Equal(magicBytes[:3], LZMA_alone_magic) {
+	if bytes.Equal(magicBytes[:3], lZMAAloneMagic) {
+		return new(Lzw)
 	}
 	return new(NoCompression)
 }
@@ -170,8 +178,7 @@ type XZReaderCloser struct {
 	*xz.Reader
 }
 
-//GetReader return XZReaderCloser reader
-//accept io.reader
+//Close close XZReaderCloser
 func (xzrc XZReaderCloser) Close() error {
 	return nil
 }

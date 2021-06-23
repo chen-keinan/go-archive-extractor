@@ -34,11 +34,11 @@ func (za ZipArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 			}
 			return nil, err
 		}
-		archiveHeader, err := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.ModTime().Unix(), archiveEntry.FileInfo().Size())
+		archiveHeader, err := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.Modified.UnixNano(), archiveEntry.FileInfo().Size())
 		if err != nil {
 			errClose := rc.Close()
 			if errClose != nil {
-
+				return nil, errClose
 			}
 			return nil, err
 		}

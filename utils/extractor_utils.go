@@ -1,13 +1,14 @@
 package utils
 
 import (
-	"crypto/sha1"
-	"crypto/sha256"
+	"crypto/sha1"   // nolint:gosec
+	"crypto/sha256" // nolint:gosec
 	"fmt"
 	"strings"
 )
 
 const (
+	//FolderSuffix const
 	FolderSuffix string = "/"
 )
 
@@ -31,6 +32,7 @@ func IsFolder(path string) bool {
 // NewSHA2 NewSH2 calculate file sha256
 // accept file byte
 //return sha256 string
+// nolint:gosec
 func NewSHA2(data []byte) string {
 	return fmt.Sprintf("%x", sha256.Sum256(data))
 }
@@ -38,6 +40,7 @@ func NewSHA2(data []byte) string {
 // NewSHA1 NewSH2 calculate file sha1
 // accept file byte
 //return sha1 string
+// nolint:gosec
 func NewSHA1(data []byte) string {
 	return fmt.Sprintf("%x", sha1.Sum(data))
 

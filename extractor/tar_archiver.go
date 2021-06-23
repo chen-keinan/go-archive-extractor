@@ -4,7 +4,7 @@ import (
 	"archive/tar"
 	"fmt"
 	"github.com/chen-keinan/go-archive-extractor/compression"
-	"github.com/chen-keinan/go-archive-extractor/extractor/archiver_errors"
+	"github.com/chen-keinan/go-archive-extractor/extractor/aerrors"
 	"github.com/chen-keinan/go-archive-extractor/utils"
 	"io"
 	"os"
@@ -31,7 +31,7 @@ func (za TarArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	}()
 	fileReader, err := compression.CreateCompression(path).GetReader(archiveFile)
 	if err != nil {
-		return nil, archiver_errors.New(err)
+		return nil, aerrors.New(err)
 	}
 	if fileReader == nil {
 		fileReader = archiveFile
@@ -43,21 +43,29 @@ func (za TarArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 		}
 	}()
 	rc := tar.NewReader(fileReader)
+	headers, archiveHeaders, err := za.extractHeaders(rc, headers)
+	if err != nil {
+		return archiveHeaders, err
+	}
+	return headers, nil
+}
+
+func (za TarArchvier) extractHeaders(rc *tar.Reader, headers []*ArchiveHeader) ([]*ArchiveHeader, []*ArchiveHeader, error) {
 	for {
 		archiveEntry, err := rc.Next()
 		if err == io.EOF {
 			break
 		}
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		if !archiveEntry.FileInfo().IsDir() && !utils.PlaceHolderFolder(archiveEntry.FileInfo().Name()) {
 			archiveHeader, err := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.ModTime.Unix(), archiveEntry.FileInfo().Size())
 			if err != nil {
-				return nil, err
+				return nil, nil, err
 			}
 			headers = append(headers, archiveHeader)
 		}
 	}
-	return headers, nil
+	return headers, nil, nil
 }

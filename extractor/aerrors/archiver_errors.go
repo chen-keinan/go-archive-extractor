@@ -1,4 +1,4 @@
-package archiver_errors
+package aerrors
 
 import "fmt"
 

@@ -25,7 +25,7 @@ func TestZipArchiver(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.Equal(t, headers[0].Name, "test.txt")
-	assert.Equal(t, headers[0].ModTime, int64(1534147868))
+	assert.Equal(t, headers[0].ModTime, int64(1534137067000000000))
 	assert.Equal(t, headers[0].Size, int64(0))
 	assert.Equal(t, headers[0].Sha1, "da39a3ee5e6b4b0d3255bfef95601890afd80709")
 	assert.Equal(t, headers[0].Sha2, "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")

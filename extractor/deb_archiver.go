@@ -1,7 +1,6 @@
 package extractor
 
 import (
-	"errors"
 	"fmt"
 	"github.com/blakesmith/ar"
 	"io"
@@ -32,7 +31,7 @@ func (za DebArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	}()
 	rc := ar.NewReader(debFile)
 	if rc == nil {
-		return nil, errors.New(fmt.Sprintf("Failed to open deb file : %s", path))
+		return nil, fmt.Errorf("Failed to open deb file : %s", path)
 	}
 	for {
 		archiveEntry, err := rc.Next()
@@ -43,7 +42,7 @@ func (za DebArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 			return nil, err
 		}
 		if archiveEntry == nil {
-			return nil, errors.New(fmt.Sprintf("Failed to open file : %s", path))
+			return nil, fmt.Errorf("Failed to open file : %s", path)
 		}
 		if !utils.IsFolder(archiveEntry.Name) {
 			archiveHeader, err := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.ModTime.Unix(), archiveEntry.Size)

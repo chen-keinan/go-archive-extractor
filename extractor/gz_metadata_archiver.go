@@ -3,7 +3,7 @@ package extractor
 import (
 	"fmt"
 	"github.com/chen-keinan/go-archive-extractor/compression"
-	"github.com/chen-keinan/go-archive-extractor/extractor/archiver_errors"
+	"github.com/chen-keinan/go-archive-extractor/extractor/aerrors"
 	"os"
 	"path/filepath"
 	"time"
@@ -16,7 +16,7 @@ type GzMetadataArchiver struct {
 //Extract extract gz metadata archive
 //accept gz metadata file path
 //return file header metadata
-func (ga GzMetadataArchiver) ExtractArchive(path string) ([]*ArchiveHeader, error) {
+func (ga GzMetadataArchiver) Extract(path string) ([]*ArchiveHeader, error) {
 	headers := make([]*ArchiveHeader, 0)
 	archiveFile, err := os.Open(filepath.Clean(path))
 	if err != nil {
@@ -30,7 +30,7 @@ func (ga GzMetadataArchiver) ExtractArchive(path string) ([]*ArchiveHeader, erro
 	}()
 	rc, err := compression.CreateCompression(path).GetReader(archiveFile)
 	if err != nil {
-		return nil, archiver_errors.New(err)
+		return nil, aerrors.New(err)
 	}
 	archiveHeader, err := NewArchiveHeader(rc, "metadata", time.Now().Unix(), 0)
 	if err != nil {

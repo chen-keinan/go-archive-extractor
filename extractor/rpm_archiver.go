@@ -3,7 +3,7 @@ package extractor
 import (
 	"fmt"
 	"github.com/chen-keinan/go-archive-extractor/compression"
-	"github.com/chen-keinan/go-archive-extractor/extractor/archiver_errors"
+	"github.com/chen-keinan/go-archive-extractor/extractor/aerrors"
 	"github.com/chen-keinan/go-rpm"
 	cpio "github.com/chen-keinan/gocpio"
 	"io"
@@ -22,7 +22,7 @@ func (za RpmArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	headers := make([]*ArchiveHeader, 0)
 	rpm, err := rpm.OpenPackageFile(filepath.Clean(path))
 	if err != nil {
-		return nil, archiver_errors.New(err)
+		return nil, aerrors.New(err)
 	}
 	file, err := os.Open(filepath.Clean(path))
 	if err != nil {
@@ -33,8 +33,6 @@ func (za RpmArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 			fmt.Print(err.Error())
 		}
 	}()
-
-	//Read content of cpio archive which starts after headers
 	headerEnd := rpm.Headers[1].End
 	archiveHead := make([]byte, 6)
 
@@ -50,16 +48,24 @@ func (za RpmArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	}
 	fileReader, err := compression.CreateCompressionFromBytes(archiveHead).GetReader(file)
 	if err != nil || fileReader == nil {
-		return nil, archiver_errors.New(err)
+		return nil, aerrors.New(err)
 	}
 	defer func() {
-		err := fileReader.Close()
+		err = fileReader.Close()
 		if err != nil {
 			fmt.Print(err.Error())
 		}
 	}()
 	rc := cpio.NewReader(fileReader)
 	var count = 0
+	headers, archiveHeaders, err := za.extractHeaders(rc, count, rpm, headers)
+	if err != nil {
+		return archiveHeaders, err
+	}
+	return headers, nil
+}
+
+func (za RpmArchvier) extractHeaders(rc *cpio.Reader, count int, rpm *rpm.PackageFile, headers []*ArchiveHeader) ([]*ArchiveHeader, []*ArchiveHeader, error) {
 	for {
 		archiveEntry, err := rc.Next()
 		if err == io.EOF {
@@ -77,14 +83,14 @@ func (za RpmArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 			if archiveEntry != nil {
 				archiveHeader, err := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.Mtime, archiveEntry.Size)
 				if err != nil {
-					return nil, err
+					return nil, nil, err
 				}
 				archiveHeader.PkgMeta = RpmMeta(rpm)
 				headers = append(headers, archiveHeader)
 			}
 		}
 	}
-	return headers, nil
+	return headers, nil, nil
 }
 
 //RpmMeta return rpm metadata as key/value
