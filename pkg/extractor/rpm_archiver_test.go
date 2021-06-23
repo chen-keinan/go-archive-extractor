@@ -6,6 +6,14 @@ import (
 	"testing"
 )
 
+func TestRpmArchiverError(t *testing.T) {
+	za := New(Rpm)
+	var err error
+	if _, err = za.Extract("./fixtures/test.zip"); err == nil {
+		t.Fatal(err)
+	}
+}
+
 func TestRpmArchiver(t *testing.T) {
 	za := New(Rpm)
 	var headers []*ArchiveHeader

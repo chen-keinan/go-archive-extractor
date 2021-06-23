@@ -9,10 +9,15 @@ import (
 type Archive int
 
 const (
+	//Zip const
 	Zip Archive = iota
+	//Tar const
 	Tar
+	//SevenZip const
 	SevenZip
+	//Deb const
 	Deb
+	//Rpm const
 	Rpm
 )
 

@@ -6,6 +6,14 @@ import (
 	"testing"
 )
 
+func Test7ZipArchiverError(t *testing.T) {
+	za := New(SevenZip)
+	var err error
+	if _, err = za.Extract("./fixtures/test.deb"); err == nil {
+		t.Fatal(err)
+	}
+}
+
 func Test7ZipArchiver(t *testing.T) {
 	za := New(SevenZip)
 	var headers []*ArchiveHeader
