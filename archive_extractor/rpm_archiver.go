@@ -14,6 +14,9 @@ import (
 type RpmArchvier struct {
 }
 
+//Extract extract rpm archive
+//accept rpm file path
+//return file header metadata
 func (za RpmArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	headers := make([]*ArchiveHeader, 0)
 	rpm, err := rpm.OpenPackageFile(filepath.Clean(path))

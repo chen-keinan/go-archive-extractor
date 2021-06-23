@@ -12,6 +12,9 @@ import (
 type GzMetadataArchiver struct {
 }
 
+//Extract extract gz metadata archive
+//accept gz metadata file path
+//return file header metadata
 func (ga GzMetadataArchiver) ExtractArchive(path string) ([]*ArchiveHeader, error) {
 	headers := make([]*ArchiveHeader, 0)
 	archiveFile, err := os.Open(filepath.Clean(path))

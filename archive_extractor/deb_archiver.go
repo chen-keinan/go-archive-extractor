@@ -14,6 +14,9 @@ import (
 type DebArchvier struct {
 }
 
+//Extract extract deb archive
+//accept deb file path
+//return file header metadata
 func (za DebArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	headers := make([]*ArchiveHeader, 0)
 	debFile, err := os.Open(filepath.Clean(path))

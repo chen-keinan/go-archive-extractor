@@ -5,10 +5,12 @@ import (
 	"io"
 )
 
+//Archiver interface
 type Archiver interface {
 	Extract(path string) ([]ArchiveHeader, error)
 }
 
+//ArchiveHeader archive headers object
 type ArchiveHeader struct {
 	Name    string
 	ModTime int64
@@ -18,6 +20,9 @@ type ArchiveHeader struct {
 	PkgMeta map[string]interface{}
 }
 
+//NewArchiveHeader return new archiver header metadata object
+// accept header data
+// return headers metadata object
 func NewArchiveHeader(archiveReader io.Reader, name string, modTime int64, size int64) (*ArchiveHeader, error) {
 	b, err := io.ReadAll(archiveReader)
 	if err != nil {

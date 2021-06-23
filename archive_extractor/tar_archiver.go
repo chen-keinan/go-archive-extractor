@@ -14,6 +14,9 @@ import (
 type TarArchvier struct {
 }
 
+//Extract extract tar archive
+//accept tar file path
+//return file header metadata
 func (za TarArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	headers := make([]*ArchiveHeader, 0)
 	archiveFile, err := os.Open(filepath.Clean(path))

@@ -12,6 +12,9 @@ import (
 type SevenZipArchvier struct {
 }
 
+//Extract extract 7zip archive
+//accept 7zip file path
+//return file header metadata
 func (za SevenZipArchvier) Extract(path string) ([]*ArchiveHeader, error) {
 	headers := make([]*ArchiveHeader, 0)
 	r, err := archive.NewArchive(filepath.Clean(path))
