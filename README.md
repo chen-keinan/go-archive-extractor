@@ -9,12 +9,16 @@ that can extract many various archive types with various tar compressions
 and invoke advance processing function while iterating archive headers
 
 
+* [Installation](#installation)
 * [Supported Archives](#supported-archives)
 * [Supported Tar Compression](#supported-tar-compression)
 * [Usage](#usage)
 
 
-
+## Installation
+``
+go get github.com/chen-keinan/go-archive-extractor
+``
 
 ## Supported Archives
  - tar
