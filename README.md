@@ -10,12 +10,10 @@ it returns archive headers metadata (name,size,timestamp,sha1 and sha256).
 
 it also support  diffrent types of tar compressions.
 
-
 * [Installation](#installation)
 * [Supported Archives](#supported-archives)
 * [Supported Tar Compression](#supported-tar-compression)
 * [Usage](#usage)
-
 
 ## Installation
 ``
