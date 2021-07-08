@@ -15,6 +15,7 @@ it also supports different types of tar compressions.
 * [Supported Archives](#supported-archives)
 * [Supported Tar Compression](#supported-tar-compression)
 * [Usage](#usage)
+* [Archive Header](#archive-header)
 
 ## Installation
 
@@ -89,5 +90,17 @@ func main() {
         fmt.Print(err.Error())
     }
     fmt.Print(headers)
+}
+```
+### Archive Header
+```
+type ArchiveHeader struct {
+	Name          string
+	ModTime       int64
+	Size          int64
+	Sha1          string
+	Sha2          string
+	PkgMeta       map[string]interface{}
+	ArchiveReader io.Reader
 }
 ```

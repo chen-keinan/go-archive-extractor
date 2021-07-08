@@ -1,6 +1,7 @@
 package extractor
 
 import (
+	"bytes"
 	"github.com/chen-keinan/go-archive-extractor/utils"
 	"io"
 )
@@ -28,12 +29,13 @@ type Archiver interface {
 
 //ArchiveHeader archive headers object
 type ArchiveHeader struct {
-	Name    string
-	ModTime int64
-	Size    int64
-	Sha1    string
-	Sha2    string
-	PkgMeta map[string]interface{}
+	Name          string
+	ModTime       int64
+	Size          int64
+	Sha1          string
+	Sha2          string
+	PkgMeta       map[string]interface{}
+	ArchiveReader io.Reader
 }
 
 //NewArchiveHeader return new archiver header metadata object
@@ -44,7 +46,7 @@ func NewArchiveHeader(archiveReader io.Reader, name string, modTime int64, size 
 	if err != nil {
 		return nil, err
 	}
-	return &ArchiveHeader{Sha1: utils.NewSHA1(b), Sha2: utils.NewSHA2(b), Name: name, ModTime: modTime, Size: size}, nil
+	return &ArchiveHeader{Sha1: utils.NewSHA1(b), Sha2: utils.NewSHA2(b), Name: name, ModTime: modTime, Size: size, ArchiveReader: bytes.NewReader(b)}, nil
 }
 
 //New instantiate new archive
