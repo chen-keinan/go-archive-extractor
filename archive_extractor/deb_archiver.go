@@ -10,11 +10,20 @@ import (
 	"github.com/jfrog/go-archive-extractor/utils"
 )
 
-type DebArchiver struct{}
+type DebArchiver struct {
+	MaxCompressRatio   int64
+	MaxNumberOfEntries int
+}
 
-func (DebArchiver) ExtractArchive(path string,
+func (da DebArchiver) ExtractArchive(path string,
 	processingFunc func(*ArchiveHeader, map[string]interface{}) error, params map[string]interface{}) error {
-
+	maxBytesLimit, err := maxBytesLimit(path, da.MaxCompressRatio)
+	if err != nil {
+		return err
+	}
+	provider := LimitAggregatingReadCloserProvider{
+		Limit: maxBytesLimit,
+	}
 	debFile, err := os.Open(path)
 	if err != nil {
 		return err
@@ -24,7 +33,12 @@ func (DebArchiver) ExtractArchive(path string,
 	if rc == nil {
 		return errors.New(fmt.Sprintf("Failed to open deb file : %s", path))
 	}
+	entriesCount := 0
 	for {
+		if da.MaxNumberOfEntries != 0 && entriesCount > da.MaxNumberOfEntries {
+			return ErrTooManyEntries
+		}
+		entriesCount++
 		archiveEntry, err := rc.Next()
 		if err != nil {
 			if err == io.EOF {
@@ -36,7 +50,8 @@ func (DebArchiver) ExtractArchive(path string,
 			return errors.New(fmt.Sprintf("Failed to open file : %s", path))
 		}
 		if !utils.IsFolder(archiveEntry.Name) {
-			archiveHeader := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.ModTime.Unix(), archiveEntry.Size)
+			limitingReader := provider.CreateLimitAggregatingReadCloser(rc)
+			archiveHeader := NewArchiveHeader(limitingReader, archiveEntry.Name, archiveEntry.ModTime.Unix(), archiveEntry.Size)
 			err = processingFunc(archiveHeader, params)
 			if err != nil {
 				return err

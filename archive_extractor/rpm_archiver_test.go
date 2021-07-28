@@ -2,6 +2,7 @@ package archive_extractor
 
 import (
 	"fmt"
+	"github.com/jfrog/go-archive-extractor/archive_extractor/archiver_errors"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -23,4 +24,28 @@ func TestRpmArchiver(t *testing.T) {
 	assert.Equal(t, rpmPkg.Version, "0.4.11")
 	assert.Equal(t, rpmPkg.Name, "php-zstd-devel")
 	assert.Equal(t, rpmPkg.ModularityLabel, "")
+}
+
+func TestRpmArchiverTooManyEntries(t *testing.T) {
+	za := &RpmArchiver{
+		MaxNumberOfEntries: 1,
+	}
+	err := za.ExtractArchive("./fixtures/test.rpm", processingFunc, params())
+	assert.EqualError(t, err, archiver_errors.New(ErrTooManyEntries).Error())
+}
+
+func TestRpmArchiverTooManyEntriesNotReached(t *testing.T) {
+	za := &RpmArchiver{
+		MaxNumberOfEntries: 100,
+	}
+	err := za.ExtractArchive("./fixtures/test.rpm", processingFunc, params())
+	assert.NoError(t, err)
+}
+
+func TestRpmArchiverRatioOk(t *testing.T) {
+	za := &RpmArchiver{
+		MaxCompressRatio: 1,
+	}
+	err := za.ExtractArchive("./fixtures/test.rpm", processingFunc, params())
+	assert.NoError(t, err)
 }

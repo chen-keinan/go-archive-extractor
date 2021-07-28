@@ -8,11 +8,20 @@ import (
 	"io"
 )
 
-type TarArchiver struct{}
+type TarArchiver struct {
+	MaxCompressRatio   int64
+	MaxNumberOfEntries int
+}
 
-func (TarArchiver) ExtractArchive(path string,
+func (ta TarArchiver) ExtractArchive(path string,
 	processingFunc func(*ArchiveHeader, map[string]interface{}) error, params map[string]interface{}) error {
-
+	maxBytesLimit, err := maxBytesLimit(path, ta.MaxCompressRatio)
+	if err != nil {
+		return err
+	}
+	provider := LimitAggregatingReadCloserProvider{
+		Limit: maxBytesLimit,
+	}
 	cReader, err := compression.NewReader(path)
 	if compression.IsGetReaderError(err) {
 		return archiver_errors.New(err)
@@ -20,10 +29,15 @@ func (TarArchiver) ExtractArchive(path string,
 	if err != nil {
 		return err
 	}
-	defer cReader.Close()
-
-	rc := tar.NewReader(cReader)
+	limitingReader := provider.CreateLimitAggregatingReadCloser(cReader)
+	defer limitingReader.Close()
+	rc := tar.NewReader(limitingReader)
+	entriesCount := 0
 	for {
+		if ta.MaxNumberOfEntries != 0 && entriesCount > ta.MaxNumberOfEntries {
+			return ErrTooManyEntries
+		}
+		entriesCount++
 		archiveEntry, err := rc.Next()
 		if err == io.EOF {
 			break

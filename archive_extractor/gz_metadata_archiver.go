@@ -6,11 +6,20 @@ import (
 	"time"
 )
 
-type GzMetadataArchiver struct{}
+type GzMetadataArchiver struct {
+	MaxCompressRatio int64
+}
 
 func (ga GzMetadataArchiver) ExtractArchive(path string,
 	processingFunc func(*ArchiveHeader, map[string]interface{}) error, params map[string]interface{}) error {
 
+	maxBytesLimit, err := maxBytesLimit(path, ga.MaxCompressRatio)
+	if err != nil {
+		return err
+	}
+	provider := LimitAggregatingReadCloserProvider{
+		Limit: maxBytesLimit,
+	}
 	cReader, err := compression.NewReader(path)
 	if compression.IsGetReaderError(err) {
 		return archiver_errors.New(err)
@@ -18,9 +27,9 @@ func (ga GzMetadataArchiver) ExtractArchive(path string,
 	if err != nil {
 		return err
 	}
-	defer cReader.Close()
-
-	archiveHeader := NewArchiveHeader(cReader, "metadata", time.Now().Unix(), 0)
+	countingReadCloser := provider.CreateLimitAggregatingReadCloser(cReader)
+	defer countingReadCloser.Close()
+	archiveHeader := NewArchiveHeader(countingReadCloser, "metadata", time.Now().Unix(), 0)
 	err = processingFunc(archiveHeader, params)
 	if err != nil {
 		return err

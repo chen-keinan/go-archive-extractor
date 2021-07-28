@@ -35,3 +35,9 @@ func processingFunc(header *ArchiveHeader, params map[string]interface{}) error 
 	archiveData.ArchiveReader = header.ArchiveReader
 	return nil
 }
+
+func processingReadingFunc(header *ArchiveHeader, params map[string]interface{}) error {
+	n, err := io.Copy(io.Discard, header.ArchiveReader)
+	params["read"] = n
+	return err
+}
