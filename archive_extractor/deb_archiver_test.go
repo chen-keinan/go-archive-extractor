@@ -19,3 +19,27 @@ func TestDebArchiver(t *testing.T) {
 	assert.Equal(t, ad.IsFolder, false)
 	assert.Equal(t, ad.Size, int64(42284))
 }
+
+func TestDebArchiverLimitNumberOfEntries(t *testing.T) {
+	za := &DebArchiver{
+		MaxNumberOfEntries: 1,
+	}
+	err := za.ExtractArchive("./fixtures/test.deb", processingReadingFunc, params())
+	assert.EqualError(t, err, ErrTooManyEntries.Error())
+}
+
+func TestDebArchiverLimitNumberOfEntriesNotReached(t *testing.T) {
+	za := &DebArchiver{
+		MaxNumberOfEntries: 10,
+	}
+	err := za.ExtractArchive("./fixtures/test.deb", processingReadingFunc, params())
+	assert.NoError(t, err)
+}
+
+func TestDebArchiverMaxRatioNotReached(t *testing.T) {
+	za := &DebArchiver{
+		MaxCompressRatio: 1,
+	}
+	err := za.ExtractArchive("./fixtures/test.deb", processingReadingFunc, params())
+	assert.NoError(t, err)
+}

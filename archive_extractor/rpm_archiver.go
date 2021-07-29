@@ -9,11 +9,14 @@ import (
 	"math"
 )
 
-type RpmArchiver struct{}
+type RpmArchiver struct {
+	MaxCompressRatio   int64
+	MaxNumberOfEntries int
+}
 
 func (ra RpmArchiver) ExtractArchive(path string,
 	processingFunc func(*ArchiveHeader, map[string]interface{}) error, params map[string]interface{}) error {
-
+	maxBytesLimit, err := maxBytesLimit(path, ra.MaxCompressRatio)
 	rpmFile, err := rpm.OpenPackageFile(path)
 	if compression.IsGetReaderError(err) {
 		return archiver_errors.New(err)
@@ -29,14 +32,14 @@ func (ra RpmArchiver) ExtractArchive(path string,
 	}
 	defer cReader.Close()
 
-	err = ra.readRpm(processingFunc, params, rpmFile, cReader)
+	err = ra.readRpm(processingFunc, params, rpmFile, cReader, maxBytesLimit)
 	if err != nil {
 		return archiver_errors.New(err)
 	}
 	return nil
 }
 
-func (RpmArchiver) getHeadersEnd(headers []rpm.Header) int64 {
+func (ra RpmArchiver) getHeadersEnd(headers []rpm.Header) int64 {
 	var end uint64
 	offset := 96
 	for i := 0; i < 2; i++ {
@@ -54,13 +57,20 @@ func (RpmArchiver) getHeadersEnd(headers []rpm.Header) int64 {
 	return int64(end)
 }
 
-func (RpmArchiver) readRpm(processingFunc func(*ArchiveHeader, map[string]interface{}) error,
-	params map[string]interface{}, rpmFile *rpm.PackageFile, fileReader io.Reader) error {
-	//create cpio reader
+func (ra RpmArchiver) readRpm(processingFunc func(*ArchiveHeader, map[string]interface{}) error,
+	params map[string]interface{}, rpmFile *rpm.PackageFile, fileReader io.Reader, maxBytesLimit int64) error {
+	provider := LimitAggregatingReadCloserProvider{
+		Limit: maxBytesLimit,
+	}
+
 	cpioReader := cpio.NewReader(fileReader)
-	// Parse the rpm
+	rc := provider.CreateLimitAggregatingReadCloser(cpioReader)
+	defer rc.Close()
 	var count = 0
 	for {
+		if ra.MaxNumberOfEntries != 0 && count > ra.MaxNumberOfEntries {
+			return ErrTooManyEntries
+		}
 		archiveEntry, err := cpioReader.Next()
 		if err == io.EOF {
 			break
@@ -70,7 +80,7 @@ func (RpmArchiver) readRpm(processingFunc func(*ArchiveHeader, map[string]interf
 		}
 		count++
 		if archiveEntry != nil && !archiveEntry.Mode.IsDir() {
-			archiveHeader := NewArchiveHeader(cpioReader, archiveEntry.Name, archiveEntry.ModTime.Unix(), archiveEntry.Size)
+			archiveHeader := NewArchiveHeader(rc, archiveEntry.Name, archiveEntry.ModTime.Unix(), archiveEntry.Size)
 			err = processingFunc(archiveHeader, params)
 			if _, ok := params["rpmPkg"]; !ok {
 				modularityLabel := getModularityLabel(rpmFile)

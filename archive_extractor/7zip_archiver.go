@@ -3,16 +3,25 @@ package archive_extractor
 import (
 	"errors"
 	"fmt"
-	"github.com/jfrog/go-archive-extractor/utils"
 	archive "github.com/gen2brain/go-unarr"
+	"github.com/jfrog/go-archive-extractor/utils"
 	"io"
 )
 
-type SevenZipArchiver struct{}
+type SevenZipArchiver struct {
+	MaxCompressRatio   int64
+	MaxNumberOfEntries int
+}
 
-func (SevenZipArchiver) ExtractArchive(path string,
+func (sa SevenZipArchiver) ExtractArchive(path string,
 	processingFunc func(*ArchiveHeader, map[string]interface{}) error, params map[string]interface{}) error {
-
+	maxBytesLimit, err := maxBytesLimit(path, sa.MaxCompressRatio)
+	if err != nil {
+		return err
+	}
+	provider := LimitAggregatingReadCloserProvider{
+		Limit: maxBytesLimit,
+	}
 	r, err := archive.NewArchive(path)
 	if err != nil {
 		return err
@@ -22,19 +31,23 @@ func (SevenZipArchiver) ExtractArchive(path string,
 		return err
 	}
 	defer r.Close()
-	if err == nil {
-		for _, archiveEntry := range allFiles {
-			err := r.EntryFor(archiveEntry)
+
+	if sa.MaxNumberOfEntries > 0 && len(allFiles) > sa.MaxNumberOfEntries {
+		return errors.New("number of entries in zip is too large")
+	}
+	for _, archiveEntry := range allFiles {
+		err := r.EntryFor(archiveEntry)
+		if err != nil {
+			return err
+		}
+		if !utils.IsFolder(archiveEntry) {
+			rc := &SevenZipReader{Archive: r, Size: r.Size()}
+			countingReadCloser := provider.CreateLimitAggregatingReadCloser(rc)
+			archiveHeader := NewArchiveHeader(countingReadCloser, r.Name(), r.ModTime().Unix(), int64(r.Size()))
+			err = processingFunc(archiveHeader, params)
+			rc.Close()
 			if err != nil {
 				return err
-			}
-			if !utils.IsFolder(archiveEntry) {
-				rc := &SevenZipReader{Archive: r, Size: r.Size()}
-				archiveHeader := NewArchiveHeader(rc, r.Name(), r.ModTime().Unix(), int64(r.Size()))
-				err = processingFunc(archiveHeader, params)
-				if err != nil {
-					return err
-				}
 			}
 		}
 	}
@@ -65,4 +78,8 @@ func (a *SevenZipReader) Read(p []byte) (n int, err error) {
 	}
 	a.Size -= n
 	return n, nil
+}
+
+func (a *SevenZipReader) Close() error {
+	return nil
 }
