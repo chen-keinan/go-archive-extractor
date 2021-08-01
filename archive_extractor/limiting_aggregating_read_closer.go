@@ -33,6 +33,9 @@ type limitAggregatingReadCloser struct {
 }
 
 func (crc *limitAggregatingReadCloser) Read(p []byte) (int, error) {
+	if crc.Limit != 0 && *crc.Total > crc.Limit {
+		return 0, ErrCompressLimitReached
+	}
 	n, err := crc.Reader.Read(p)
 	if err != nil && err != io.EOF {
 		return n, err

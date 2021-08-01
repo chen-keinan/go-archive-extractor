@@ -33,7 +33,7 @@ func (sa SevenZipArchiver) ExtractArchive(path string,
 	defer r.Close()
 
 	if sa.MaxNumberOfEntries > 0 && len(allFiles) > sa.MaxNumberOfEntries {
-		return errors.New("number of entries in zip is too large")
+		return ErrTooManyEntries
 	}
 	for _, archiveEntry := range allFiles {
 		err := r.EntryFor(archiveEntry)

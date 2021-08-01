@@ -33,8 +33,11 @@ func (ra RpmArchiver) ExtractArchive(path string,
 	defer cReader.Close()
 
 	err = ra.readRpm(processingFunc, params, rpmFile, cReader, maxBytesLimit)
-	if err != nil {
+	if err != nil && err != ErrCompressLimitReached {
 		return archiver_errors.New(err)
+	}
+	if err == ErrCompressLimitReached {
+		return err
 	}
 	return nil
 }
