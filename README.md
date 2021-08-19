@@ -3,6 +3,7 @@
 <img src="./pkg/img/coverage_badge.png" alt="test coverage badge">
 [![Gitter](https://badges.gitter.im/beacon-sec/community.svg)](https://gitter.im/beacon-sec/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
+<br><img src="./pkg/img/arc-extract.png" width="300" alt="arc-extract logo"><br>
 # go-archive-extractor
 
 The archive-extractor is an open-source library for extracting various archive types.
