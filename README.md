@@ -20,7 +20,7 @@ it also supports different types of tar compressions.
 
 ## Installation
 
-```go
+```shell
 go get github.com/chen-keinan/go-archive-extractor
 ```
 
