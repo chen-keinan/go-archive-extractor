@@ -20,9 +20,9 @@ it also supports different types of tar compressions.
 
 ## Installation
 
-``
+```go
 go get github.com/chen-keinan/go-archive-extractor
-``
+```
 
 ## Supported Archives
 
@@ -45,7 +45,7 @@ go get github.com/chen-keinan/go-archive-extractor
 
 ### Zip Usage
 
-```
+```go
     zip := extractor.New(extractor.Zip)
     headers, err = zip.Extract("common.zip");
     fmt.Print(headers)
@@ -53,7 +53,7 @@ go get github.com/chen-keinan/go-archive-extractor
 
 ### Tar Usage
 
-```
+```go
     tar := extractor.New(extractor.Tar)
     headers, err = tar.Extract("common.tar");
     fmt.Print(headers)
@@ -61,7 +61,7 @@ go get github.com/chen-keinan/go-archive-extractor
 
 ### Debian Usage
 
-```
+```go
     deb := extractor.New(extractor.Deb)
     headers, err = deb.Extract("common.deb");
     fmt.Print(headers)
@@ -69,7 +69,7 @@ go get github.com/chen-keinan/go-archive-extractor
 
 ### RPM Usage
 
-```
+```go
     rpm := extractor.New(extractor.Rpm)
     headers, err = rpm.Extract("common.rpm");
     fmt.Print(headers)
@@ -77,13 +77,13 @@ go get github.com/chen-keinan/go-archive-extractor
 
 ### 7z Usage
 
-```
+```go
     sevenZip := extractor.New(extractor.SevenZip)
     headers, err = sevenZip.Extract("common.7z");
     fmt.Print(headers)
 ```
 
-```
+```go
 func main() {
     zip := extractor.New(extractor.Zip)
     headers, err = zip.Extract("common.zip");
@@ -94,7 +94,7 @@ func main() {
 }
 ```
 ### Archive Header
-```
+```go
 type ArchiveHeader struct {
 	Name          string
 	ModTime       int64
