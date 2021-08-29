@@ -4,6 +4,7 @@
 [![Gitter](https://badges.gitter.im/beacon-sec/community.svg)](https://gitter.im/beacon-sec/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 <br><img src="./pkg/img/arc-extract.png" width="300" alt="arc-extract logo"><br>
+
 # go-archive-extractor
 
 The archive-extractor is an open-source library for extracting various archive types.
@@ -47,61 +48,70 @@ go get github.com/chen-keinan/go-archive-extractor
 
 ```go
     zip := extractor.New(extractor.Zip)
-    headers, err = zip.Extract("common.zip");
-    fmt.Print(headers)
+headers, err = zip.Extract("common.zip");
+fmt.Print(headers)
 ```
 
 ### Tar Usage
 
 ```go
     tar := extractor.New(extractor.Tar)
-    headers, err = tar.Extract("common.tar");
-    fmt.Print(headers)
+headers, err = tar.Extract("common.tar");
+fmt.Print(headers)
 ```
 
 ### Debian Usage
 
 ```go
     deb := extractor.New(extractor.Deb)
-    headers, err = deb.Extract("common.deb");
-    fmt.Print(headers)
+headers, err = deb.Extract("common.deb");
+fmt.Print(headers)
 ```
 
 ### RPM Usage
 
 ```go
     rpm := extractor.New(extractor.Rpm)
-    headers, err = rpm.Extract("common.rpm");
-    fmt.Print(headers)
+headers, err = rpm.Extract("common.rpm");
+fmt.Print(headers)
 ```
 
 ### 7z Usage
 
 ```go
     sevenZip := extractor.New(extractor.SevenZip)
-    headers, err = sevenZip.Extract("common.7z");
-    fmt.Print(headers)
+headers, err = sevenZip.Extract("common.7z");
+fmt.Print(headers)
 ```
 
 ```go
+package main
+
+import (
+	"fmt"
+	"github.com/chen-keinan/go-archive-extractor/pkg/extractor"
+)
+
 func main() {
-    zip := extractor.New(extractor.Zip)
-    headers, err = zip.Extract("common.zip");
-    if err != nil {
-        fmt.Print(err.Error())
-    }
-    fmt.Print(headers)
+	zip := extractor.New(extractor.Zip)
+	headers, err := zip.Extract("common.zip")
+	if err != nil {
+		fmt.Print(err.Error())
+	}
+	fmt.Print(headers)
 }
 ```
+
 ### Archive Header
+
 ```go
 type ArchiveHeader struct {
-	Name          string
-	ModTime       int64
-	Size          int64
-	Sha1          string
-	Sha2          string
-	PkgMeta       map[string]interface{}
-	ArchiveReader io.Reader
+Name          string
+ModTime       int64
+Size          int64
+Sha1          string
+Sha2          string
+PkgMeta       map[string]interface{}
+ArchiveReader io.Reader
 }
 ```
