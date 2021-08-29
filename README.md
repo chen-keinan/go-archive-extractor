@@ -47,7 +47,7 @@ go get github.com/chen-keinan/go-archive-extractor
 ### Zip Usage
 
 ```go
-    zip := extractor.New(extractor.Zip)
+zip := extractor.New(extractor.Zip)
 headers, err = zip.Extract("common.zip");
 fmt.Print(headers)
 ```
@@ -55,7 +55,7 @@ fmt.Print(headers)
 ### Tar Usage
 
 ```go
-    tar := extractor.New(extractor.Tar)
+tar := extractor.New(extractor.Tar)
 headers, err = tar.Extract("common.tar");
 fmt.Print(headers)
 ```
@@ -63,7 +63,7 @@ fmt.Print(headers)
 ### Debian Usage
 
 ```go
-    deb := extractor.New(extractor.Deb)
+deb := extractor.New(extractor.Deb)
 headers, err = deb.Extract("common.deb");
 fmt.Print(headers)
 ```
@@ -71,7 +71,7 @@ fmt.Print(headers)
 ### RPM Usage
 
 ```go
-    rpm := extractor.New(extractor.Rpm)
+rpm := extractor.New(extractor.Rpm)
 headers, err = rpm.Extract("common.rpm");
 fmt.Print(headers)
 ```
@@ -79,7 +79,7 @@ fmt.Print(headers)
 ### 7z Usage
 
 ```go
-    sevenZip := extractor.New(extractor.SevenZip)
+sevenZip := extractor.New(extractor.SevenZip)
 headers, err = sevenZip.Extract("common.7z");
 fmt.Print(headers)
 ```
