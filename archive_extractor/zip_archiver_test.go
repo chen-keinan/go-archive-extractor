@@ -82,7 +82,7 @@ func TestZipArchiverAggregationCauseError(t *testing.T) {
 	}
 	funcParams := params()
 	err := za.ExtractArchive("./fixtures/testmanyfileswithcontent.zip", processingReadingFunc, funcParams)
-	assert.EqualError(t, err, ErrCompressLimitReached.Error())
+	assert.True(t, IsErrCompressLimitReached(err))
 }
 
 func TestZipArchiverSingleFileRatioCauseError(t *testing.T) {
@@ -91,5 +91,5 @@ func TestZipArchiverSingleFileRatioCauseError(t *testing.T) {
 	}
 	funcParams := params()
 	err := za.ExtractArchive("./fixtures/testwithsinglelargefile.zip", processingReadingFunc, funcParams)
-	assert.EqualError(t, err, ErrCompressLimitReached.Error())
+	assert.True(t, IsErrCompressLimitReached(err))
 }

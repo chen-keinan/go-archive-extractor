@@ -51,7 +51,7 @@ func TestTarArchiverMaxRatio(t *testing.T) {
 	}
 	funcParams := params()
 	err := za.ExtractArchive("./fixtures/testsinglelarge.tar.gz", processingReadingFunc, funcParams)
-	assert.EqualError(t, err, ErrCompressLimitReached.Error())
+	assert.True(t, IsErrCompressLimitReached(err))
 }
 
 func TestTarArchiverMaxRatioNotReached(t *testing.T) {
@@ -87,5 +87,5 @@ func TestTarArchiverAggregationCauseRatioLimitError(t *testing.T) {
 	}
 	funcParams := params()
 	err := za.ExtractArchive("./fixtures/testmanylarge.tar.gz", processingReadingFunc, funcParams)
-	assert.EqualError(t, err, ErrCompressLimitReached.Error())
+	assert.True(t, IsErrCompressLimitReached(err))
 }
