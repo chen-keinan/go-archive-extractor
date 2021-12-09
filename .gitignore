@@ -33,3 +33,5 @@
 
 #intelij
 *.iml
+
+/vendor/

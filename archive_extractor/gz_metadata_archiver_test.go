@@ -25,12 +25,12 @@ func TestGzMetadataArchiverWithRatio(t *testing.T) {
 	ga := GzMetadataArchiver{MaxCompressRatio: 2}
 	funcParams := params()
 	err := ga.ExtractArchive("./fixtures/testwithcontent.gz", processingReadingFunc, funcParams)
-	assert.EqualError(t, err, ErrCompressLimitReached.Error())
+	assert.True(t, IsErrCompressLimitReached(err))
 }
 
 func TestGzMetadataArchiverWithReasonableRatio(t *testing.T) {
 	ga := GzMetadataArchiver{MaxCompressRatio: 3}
 	funcParams := params()
 	err := ga.ExtractArchive("./fixtures/testwithcontent.gz", processingReadingFunc, funcParams)
-	assert.EqualError(t, err, ErrCompressLimitReached.Error())
+	assert.True(t, IsErrCompressLimitReached(err))
 }

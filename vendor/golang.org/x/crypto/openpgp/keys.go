@@ -307,8 +307,6 @@ func readToNextPublicKey(packets *packet.Reader) (err error) {
 			return
 		}
 	}
-
-	panic("unreachable")
 }
 
 // ReadEntity reads an entity (public key, identities, subkeys etc) from the
@@ -327,9 +325,8 @@ func ReadEntity(packets *packet.Reader) (*Entity, error) {
 		if e.PrivateKey, ok = p.(*packet.PrivateKey); !ok {
 			packets.Unread(p)
 			return nil, errors.StructuralError("first packet was not a public/private key")
-		} else {
-			e.PrimaryKey = &e.PrivateKey.PublicKey
 		}
+		e.PrimaryKey = &e.PrivateKey.PublicKey
 	}
 
 	if !e.PrimaryKey.PubKeyAlgo.CanSign() {
@@ -489,7 +486,7 @@ func NewEntity(name, comment, email string, config *packet.Config) (*Entity, err
 	}
 	isPrimaryId := true
 	e.Identities[uid.Id] = &Identity{
-		Name:   uid.Name,
+		Name:   uid.Id,
 		UserId: uid,
 		SelfSignature: &packet.Signature{
 			CreationTime: currentTime,
@@ -502,6 +499,21 @@ func NewEntity(name, comment, email string, config *packet.Config) (*Entity, err
 			FlagCertify:  true,
 			IssuerKeyId:  &e.PrimaryKey.KeyId,
 		},
+	}
+	err = e.Identities[uid.Id].SelfSignature.SignUserId(uid.Id, e.PrimaryKey, e.PrivateKey, config)
+	if err != nil {
+		return nil, err
+	}
+
+	// If the user passes in a DefaultHash via packet.Config,
+	// set the PreferredHash for the SelfSignature.
+	if config != nil && config.DefaultHash != 0 {
+		e.Identities[uid.Id].SelfSignature.PreferredHash = []uint8{hashToHashId(config.DefaultHash)}
+	}
+
+	// Likewise for DefaultCipher.
+	if config != nil && config.DefaultCipher != 0 {
+		e.Identities[uid.Id].SelfSignature.PreferredSymmetric = []uint8{uint8(config.DefaultCipher)}
 	}
 
 	e.Subkeys = make([]Subkey, 1)
@@ -521,14 +533,17 @@ func NewEntity(name, comment, email string, config *packet.Config) (*Entity, err
 	}
 	e.Subkeys[0].PublicKey.IsSubkey = true
 	e.Subkeys[0].PrivateKey.IsSubkey = true
-
+	err = e.Subkeys[0].Sig.SignKey(e.Subkeys[0].PublicKey, e.PrivateKey, config)
+	if err != nil {
+		return nil, err
+	}
 	return e, nil
 }
 
 // SerializePrivate serializes an Entity, including private key material, to
 // the given Writer. For now, it must only be used on an Entity returned from
 // NewEntity.
-// If config is nil, sensible defaults will be used.
+// config is ignored
 func (e *Entity) SerializePrivate(w io.Writer, config *packet.Config) (err error) {
 	err = e.PrivateKey.Serialize(w)
 	if err != nil {
@@ -539,10 +554,6 @@ func (e *Entity) SerializePrivate(w io.Writer, config *packet.Config) (err error
 		if err != nil {
 			return
 		}
-		err = ident.SelfSignature.SignUserId(ident.UserId.Id, e.PrimaryKey, e.PrivateKey, config)
-		if err != nil {
-			return
-		}
 		err = ident.SelfSignature.Serialize(w)
 		if err != nil {
 			return
@@ -550,10 +561,6 @@ func (e *Entity) SerializePrivate(w io.Writer, config *packet.Config) (err error
 	}
 	for _, subkey := range e.Subkeys {
 		err = subkey.PrivateKey.Serialize(w)
-		if err != nil {
-			return
-		}
-		err = subkey.Sig.SignKey(subkey.PublicKey, e.PrivateKey, config)
 		if err != nil {
 			return
 		}

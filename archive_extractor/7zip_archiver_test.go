@@ -34,7 +34,7 @@ func Test7ZipArchiverLimitRatio(t *testing.T) {
 	}
 	funcParams := params()
 	err := za.ExtractArchive("./fixtures/testwithcontent.7z", processingReadingFunc, funcParams)
-	assert.EqualError(t, err, ErrCompressLimitReached.Error())
+	assert.True(t, IsErrCompressLimitReached(err))
 }
 
 func Test7ZipArchiverLimitRatioHighEnough(t *testing.T) {
@@ -61,5 +61,5 @@ func Test7ZipArchiverLimitRatioAggregationCauseError(t *testing.T) {
 	}
 	funcParams := params()
 	err := za.ExtractArchive("./fixtures/testwithmultiplelargeentries.7z", processingReadingFunc, funcParams)
-	assert.EqualError(t, err, ErrCompressLimitReached.Error())
+	assert.True(t, IsErrCompressLimitReached(err))
 }
