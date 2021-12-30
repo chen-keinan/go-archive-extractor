@@ -57,6 +57,9 @@ fmt.Print(headers)
 ```go
 tar := extractor.New(extractor.Tar)
 headers, err = tar.Extract("common.tar");
+if err != nil {
+   fmt.Print(err.Error())
+}
 fmt.Print(headers)
 ```
 
@@ -65,6 +68,9 @@ fmt.Print(headers)
 ```go
 deb := extractor.New(extractor.Deb)
 headers, err = deb.Extract("common.deb");
+if err != nil {
+  fmt.Print(err.Error())
+}
 fmt.Print(headers)
 ```
 
@@ -73,14 +79,19 @@ fmt.Print(headers)
 ```go
 rpm := extractor.New(extractor.Rpm)
 headers, err = rpm.Extract("common.rpm");
+if err != nil {
+  fmt.Print(err.Error())
+}
 fmt.Print(headers)
 ```
 
-### 7z Usage
-
+### 7z Usagey
 ```go
 sevenZip := extractor.New(extractor.SevenZip)
 headers, err = sevenZip.Extract("common.7z");
+if err != nil {
+  fmt.Print(err.Error())
+}
 fmt.Print(headers)
 ```
 
