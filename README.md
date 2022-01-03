@@ -7,7 +7,7 @@
 
 # go-archive-extractor
 
-The archive-extractor is an open-source library for extracting various archive types
+The archive-extractor is an open-source library for extracting various archive types.
 
 it returns archive headers metadata (name,size,timestamp,sha1 and sha256)
 
