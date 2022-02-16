@@ -9,6 +9,6 @@ require (
 	github.com/deoxxa/gocpio v1.0.1 // indirect
 	github.com/gen2brain/go-unarr v0.0.0-20190203132630-dd30f8db8e40
 	github.com/jfrog/go-rpm/v2 v2.0.3
-	github.com/stretchr/testify v1.5.1
+	github.com/stretchr/testify v1.7.0
 	github.com/ulikunitz/xz v0.5.7
 )
