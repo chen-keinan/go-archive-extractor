@@ -11,8 +11,7 @@ require (
 	github.com/chen-keinan/go-rpm v0.0.0-20160610194220-8ca34a68e949
 	github.com/chen-keinan/gocpio v0.0.0-00010101000000-000000000000
 	github.com/gen2brain/go-unarr v0.1.1
-	github.com/golang/mock v1.6.0 // indirect
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.7.1
 	github.com/ulikunitz/xz v0.5.10
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
 )
