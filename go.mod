@@ -10,7 +10,7 @@ require (
 	github.com/cavaliercoder/go-rpm v0.0.0-20200122174316-8cb9fd9c31a8 // indirect
 	github.com/chen-keinan/go-rpm v0.0.0-20160610194220-8ca34a68e949
 	github.com/chen-keinan/gocpio v0.0.0-00010101000000-000000000000
-	github.com/gen2brain/go-unarr v0.1.1
+	github.com/gen2brain/go-unarr v0.1.2
 	github.com/stretchr/testify v1.7.1
 	github.com/ulikunitz/xz v0.5.10
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
