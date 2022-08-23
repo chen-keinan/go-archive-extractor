@@ -8,12 +8,12 @@ import (
 	"io"
 )
 
-type SevenZipArchiver struct {
+type SevenZipAndRarArchiver struct {
 	MaxCompressRatio   int64
 	MaxNumberOfEntries int
 }
 
-func (sa SevenZipArchiver) ExtractArchive(path string,
+func (sa SevenZipAndRarArchiver) ExtractArchive(path string,
 	processingFunc func(*ArchiveHeader, map[string]interface{}) error, params map[string]interface{}) error {
 	maxBytesLimit, err := maxBytesLimit(path, sa.MaxCompressRatio)
 	if err != nil {
@@ -41,7 +41,7 @@ func (sa SevenZipArchiver) ExtractArchive(path string,
 			return err
 		}
 		if !utils.IsFolder(archiveEntry) {
-			rc := &SevenZipReader{Archive: r, Size: r.Size()}
+			rc := &SevenZipAndRarReader{Archive: r, Size: r.Size()}
 			countingReadCloser := provider.CreateLimitAggregatingReadCloser(rc)
 			archiveHeader := NewArchiveHeader(countingReadCloser, r.Name(), r.ModTime().Unix(), int64(r.Size()))
 			err = processingFunc(archiveHeader, params)
@@ -54,12 +54,12 @@ func (sa SevenZipArchiver) ExtractArchive(path string,
 	return nil
 }
 
-type SevenZipReader struct {
+type SevenZipAndRarReader struct {
 	Archive *archive.Archive
 	Size    int
 }
 
-func (a *SevenZipReader) Read(p []byte) (n int, err error) {
+func (a *SevenZipAndRarReader) Read(p []byte) (n int, err error) {
 	if a.Size <= 0 {
 		return 0, io.EOF
 	}
@@ -80,6 +80,6 @@ func (a *SevenZipReader) Read(p []byte) (n int, err error) {
 	return n, nil
 }
 
-func (a *SevenZipReader) Close() error {
+func (a *SevenZipAndRarReader) Close() error {
 	return nil
 }

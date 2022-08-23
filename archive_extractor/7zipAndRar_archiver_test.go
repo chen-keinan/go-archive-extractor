@@ -7,7 +7,7 @@ import (
 )
 
 func Test7ZipArchiver(t *testing.T) {
-	za := &SevenZipArchiver{}
+	za := &SevenZipAndRarArchiver{}
 	funcParams := params()
 	if err := za.ExtractArchive("./fixtures/test.7z", processingFunc, funcParams); err != nil {
 		fmt.Print(err.Error())
@@ -21,7 +21,7 @@ func Test7ZipArchiver(t *testing.T) {
 }
 
 func Test7ZipArchiverReadAll(t *testing.T) {
-	za := &SevenZipArchiver{}
+	za := &SevenZipAndRarArchiver{}
 	funcParams := params()
 	err := za.ExtractArchive("./fixtures/testwithcontent.7z", processingReadingFunc, funcParams)
 	assert.NoError(t, err)
@@ -29,7 +29,7 @@ func Test7ZipArchiverReadAll(t *testing.T) {
 }
 
 func Test7ZipArchiverLimitRatio(t *testing.T) {
-	za := &SevenZipArchiver{
+	za := &SevenZipAndRarArchiver{
 		MaxCompressRatio: 3,
 	}
 	funcParams := params()
@@ -38,7 +38,7 @@ func Test7ZipArchiverLimitRatio(t *testing.T) {
 }
 
 func Test7ZipArchiverLimitRatioHighEnough(t *testing.T) {
-	za := &SevenZipArchiver{
+	za := &SevenZipAndRarArchiver{
 		MaxCompressRatio: 4,
 	}
 	funcParams := params()
@@ -47,7 +47,7 @@ func Test7ZipArchiverLimitRatioHighEnough(t *testing.T) {
 }
 
 func Test7ZipArchiverLimitNumberOfRecords(t *testing.T) {
-	za := &SevenZipArchiver{
+	za := &SevenZipAndRarArchiver{
 		MaxNumberOfEntries: 1,
 	}
 	funcParams := params()
@@ -56,7 +56,7 @@ func Test7ZipArchiverLimitNumberOfRecords(t *testing.T) {
 }
 
 func Test7ZipArchiverLimitRatioAggregationCauseError(t *testing.T) {
-	za := &SevenZipArchiver{
+	za := &SevenZipAndRarArchiver{
 		MaxCompressRatio: 20,
 	}
 	funcParams := params()
