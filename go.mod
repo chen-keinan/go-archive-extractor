@@ -8,7 +8,7 @@ require (
 	github.com/blakesmith/ar v0.0.0-20190502131153-809d4375e1fb
 	github.com/chen-keinan/go-rpm v0.0.0-20160610194220-8ca34a68e949
 	github.com/chen-keinan/gocpio v0.0.0-00010101000000-000000000000
-	github.com/gen2brain/go-unarr v0.1.4
+	github.com/gen2brain/go-unarr v0.1.6
 	github.com/stretchr/testify v1.8.0
 	github.com/ulikunitz/xz v0.5.10
 )
