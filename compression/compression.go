@@ -39,11 +39,11 @@ var (
 	lzmaMagic = []byte{0x5D, 0x00, 0x00}
 )
 
-func NewReaderSkipBytes(filePath string, skip int64) (io.ReadCloser, error) {
+func NewReaderSkipBytes(filePath string, skip int64) (io.ReadCloser, bool, error) {
 	return newReader(&fileArgs{path: filePath, skipBytes: skip})
 }
 
-func NewReader(filePath string) (io.ReadCloser, error) {
+func NewReader(filePath string) (io.ReadCloser, bool, error) {
 	return newReader(&fileArgs{path: filePath})
 }
 
@@ -67,43 +67,57 @@ func (fa *fileArgs) open() (*os.File, error) {
 	return f, nil
 }
 
-func newReader(fa *fileArgs) (io.ReadCloser, error) {
+func newReader(fa *fileArgs) (reader io.ReadCloser, isCompressed bool, err error) {
+	isCompressed = true
 	ext := filepath.Ext(fa.path)
 	//these types has no defined magic bytes
 	switch ext {
 	case lzwExt:
-		return initReader(fa, lzwReader)
+		reader, err = initReader(fa, lzwReader)
+		return
 	case inflExt:
-		return initReader(fa, flateReader)
+		reader, err = initReader(fa, flateReader)
+		return
 	case zlibExt:
-		return initReader(fa, zlibReader)
+		reader, err = initReader(fa, zlibReader)
+		return
 	}
 	// if possible init by magic bytes
-	if magic, err := getMagicBytes(fa); err == nil {
+	if magic, magicErr := getMagicBytes(fa); magicErr == nil {
 		switch {
 		case bytes.HasPrefix(magic, bz2Magic):
-			return initReader(fa, bz2Reader)
+			reader, err = initReader(fa, bz2Reader)
+			return
 		case bytes.HasPrefix(magic, gzipMagic):
-			return initReader(fa, gzipReader)
+			reader, err = initReader(fa, gzipReader)
+			return
 		case bytes.HasPrefix(magic, xzMagic):
-			return initReader(fa, xzReader)
+			reader, err = initReader(fa, xzReader)
+			return
 		case bytes.HasPrefix(magic, lzmaMagic):
-			return initReader(fa, lzmaReader)
+			reader, err = initReader(fa, lzmaReader)
+			return
 		}
 	}
 	// fallback to init by extension
 	switch ext {
 	case bz2Ext, tbz2Ext:
-		return initReader(fa, bz2Reader)
+		reader, err = initReader(fa, bz2Reader)
+		return
 	case gzExt, tgzExt:
-		return initReader(fa, gzipReader)
+		reader, err = initReader(fa, gzipReader)
+		return
 	case xzExt, txzExt:
-		return initReader(fa, xzReader)
+		reader, err = initReader(fa, xzReader)
+		return
 	case lzmaExt, tlzmaExt:
-		return initReader(fa, lzmaReader)
+		reader, err = initReader(fa, lzmaReader)
+		return
 	default:
 		// no compression format found
-		return initReader(fa, fileReader)
+		isCompressed = false
+		reader, err = initReader(fa, fileReader)
+		return
 	}
 }
 

@@ -26,7 +26,7 @@ func (ra RpmArchiver) ExtractArchive(path string,
 	}
 
 	headerEnd := ra.getHeadersEnd(rpmFile.Headers)
-	cReader, err := compression.NewReaderSkipBytes(path, headerEnd)
+	cReader, _, err := compression.NewReaderSkipBytes(path, headerEnd)
 	if err != nil {
 		return archiver_errors.New(err)
 	}

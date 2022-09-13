@@ -22,7 +22,7 @@ func (ta TarArchiver) ExtractArchive(path string,
 	provider := LimitAggregatingReadCloserProvider{
 		Limit: maxBytesLimit,
 	}
-	cReader, err := compression.NewReader(path)
+	cReader, _, err := compression.NewReader(path)
 	if compression.IsGetReaderError(err) {
 		return archiver_errors.New(err)
 	}

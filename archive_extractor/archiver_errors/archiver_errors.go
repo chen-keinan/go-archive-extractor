@@ -11,5 +11,5 @@ func New(e error) ArchiverExtractorError {
 }
 
 func (aee ArchiverExtractorError) Error() string {
-	return fmt.Sprintf("Archive extractor error,%s", aee.archiverError.Error())
+	return fmt.Sprintf("Archive extractor error, %s", aee.archiverError.Error())
 }
