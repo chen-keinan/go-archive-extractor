@@ -10,8 +10,7 @@ import (
 )
 
 type Decompressor struct {
-	MaxCompressRatio   int64
-	MaxNumberOfEntries int
+	MaxCompressRatio int64
 }
 
 const (
@@ -31,10 +30,10 @@ func (dc Decompressor) ExtractArchive(path string,
 	if err != nil {
 		return archiver_errors.New(err)
 	}
+	defer cReader.Close()
 	if !isCompressed {
 		return archiver_errors.New(fmt.Errorf(NotCompressedOrNotSupportedError, path))
 	}
-	defer cReader.Close()
 	limitingReader := provider.CreateLimitAggregatingReadCloser(cReader)
 	defer limitingReader.Close()
 	f, err := os.Open(path)
