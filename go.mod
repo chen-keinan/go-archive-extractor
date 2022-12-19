@@ -10,7 +10,7 @@ require (
 	github.com/chen-keinan/gocpio v0.0.0-00010101000000-000000000000
 	github.com/gen2brain/go-unarr v0.1.6
 	github.com/stretchr/testify v1.8.1
-	github.com/ulikunitz/xz v0.5.10
+	github.com/ulikunitz/xz v0.5.11
 )
 
 require (
