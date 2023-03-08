@@ -59,6 +59,14 @@ func TestDecompressor_ExtractArchive_CompressedFile(t *testing.T) {
 			ExpectedIsFolder: false,
 			ExpectedSize:     11,
 		},
+		{
+			Name:             "Test zstd compression",
+			FilePath:         "./fixtures/test.txt.zst",
+			ExpectedName:     "test.txt",
+			ExpectedModTime:  1661434675,
+			ExpectedIsFolder: false,
+			ExpectedSize:     20,
+		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.Name, func(t *testing.T) {
