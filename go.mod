@@ -9,7 +9,7 @@ require (
 	github.com/chen-keinan/go-rpm v0.0.0-20160610194220-8ca34a68e949
 	github.com/chen-keinan/gocpio v0.0.0-00010101000000-000000000000
 	github.com/gen2brain/go-unarr v0.1.6
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.3
 	github.com/ulikunitz/xz v0.5.11
 )
 
