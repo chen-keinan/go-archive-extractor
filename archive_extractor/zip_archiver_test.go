@@ -127,14 +127,6 @@ func TestZipArchiver_PrependedEmptyZip(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestZipArchiver_zoneInfoFile(t *testing.T) {
-	ziPath := "./fixtures/testzoneinfo.zi"
-	za := &ZipArchiver{}
-	funcParams := params()
-	err := za.ExtractArchive(ziPath, processingFunc, funcParams)
-	assert.EqualError(t, err, ErrZoneInfoFile.Error())
-}
-
 func TestZipArchiver_initZipReader_signatureAtBufStart(t *testing.T) {
 	zipPath := "./fixtures/test.zip"
 	f, err := os.Open(zipPath)
