@@ -137,6 +137,8 @@ func initZipReader(r io.ReaderAt, size int64) (*zip.Reader, error) {
 	return nil, errors.New("No zip file found")
 }
 
+// The tz database is also known as tzdata, the zoneinfo database or IANA time zone database.
+// This check is added because the file extension is .zi (same as .zip)
 func isZoneInfoFile(buf []byte) bool {
 	return bytes.Index(buf, []byte(zoneInfoFileHeaderSignatureString)) != -1
 }
