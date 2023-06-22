@@ -133,7 +133,7 @@ func TestZipArchiver_zoneInfoFile(t *testing.T) {
 	funcParams := params()
 	err := za.ExtractArchive(ziPath, processingFunc, funcParams)
 	assert.IsType(t, err, &ZoneInfoFileError{})
-	assert.EqualError(t, err, ErrZoneInfoFile.Error())
+	assert.EqualError(t, err, zoneInfoErrMsg)
 }
 
 func TestZipArchiver_initZipReader_signatureAtBufStart(t *testing.T) {
