@@ -12,16 +12,13 @@ import (
 
 const fileHeaderSignatureString = "PK\x03\x04"
 const zoneInfoFileHeaderSignatureString = "\x23\x20\x76\x65\x72\x73\x69\x6F\x6E"
+const zoneInfoErrMsg = "zone info file found instead of zip"
 
-type ZoneInfoFileError struct {
-	message string
-}
+type ZoneInfoFileError struct{}
 
 func (e *ZoneInfoFileError) Error() string {
-	return e.message
+	return zoneInfoErrMsg
 }
-
-var ErrZoneInfoFile = &ZoneInfoFileError{"zone info file found instead of zip"}
 
 type ZipArchiver struct {
 	MaxCompressRatio   int64
@@ -116,7 +113,7 @@ func initZipReader(r io.ReaderAt, size int64) (*zip.Reader, error) {
 		n := 0
 		for {
 			if isZoneInfoFile(buf[n:len]) {
-				return nil, ErrZoneInfoFile
+				return nil, &ZoneInfoFileError{}
 			}
 			m := bytes.Index(buf[n:len], []byte(fileHeaderSignatureString))
 			if m == -1 {
