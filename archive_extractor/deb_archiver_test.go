@@ -43,3 +43,36 @@ func TestDebArchiverMaxRatioNotReached(t *testing.T) {
 	err := za.ExtractArchive("./fixtures/test.deb", processingReadingFunc, params())
 	assert.NoError(t, err)
 }
+
+func TestDebArchiverSkipFoldersCheck(t *testing.T) {
+	za := &DebArchiver{
+		MaxCompressRatio:   1,
+		MaxNumberOfEntries: 3,
+	}
+	paramsMap := params()
+
+	var entries []string
+	processor := func(header *ArchiveHeader, params map[string]interface{}) error {
+		entries = append(entries, header.Name)
+		return nil
+	}
+
+	archivePath := "./fixtures/testslashesinentrynames.deb"
+
+	// Default behaviour, skip entries that look like folders
+	err := za.ExtractArchive(archivePath, processor, paramsMap)
+	assert.NoError(t, err)
+	assert.Equal(t, 0, len(entries))
+
+	// Explicitly skip entries that look like folders
+	paramsMap[DebArchiverSkipFoldersCheckParamsKey] = false
+	err = za.ExtractArchive(archivePath, processor, paramsMap)
+	assert.NoError(t, err)
+	assert.Equal(t, 0, len(entries))
+
+	// Don't skip entries that look like folders
+	paramsMap[DebArchiverSkipFoldersCheckParamsKey] = true
+	err = za.ExtractArchive(archivePath, processor, paramsMap)
+	assert.NoError(t, err)
+	assert.Equal(t, 3, len(entries))
+}

@@ -15,6 +15,8 @@ type DebArchiver struct {
 	MaxNumberOfEntries int
 }
 
+const DebArchiverSkipFoldersCheckParamsKey = "DebArchiverSkipFoldersCheckParamsKey"
+
 func (da DebArchiver) ExtractArchive(path string,
 	processingFunc func(*ArchiveHeader, map[string]interface{}) error, params map[string]interface{}) error {
 	maxBytesLimit, err := maxBytesLimit(path, da.MaxCompressRatio)
@@ -33,6 +35,7 @@ func (da DebArchiver) ExtractArchive(path string,
 	if rc == nil {
 		return errors.New(fmt.Sprintf("Failed to open deb file : %s", path))
 	}
+
 	entriesCount := 0
 	for {
 		if da.MaxNumberOfEntries != 0 && entriesCount > da.MaxNumberOfEntries {
@@ -49,7 +52,7 @@ func (da DebArchiver) ExtractArchive(path string,
 		if archiveEntry == nil {
 			return errors.New(fmt.Sprintf("Failed to open file : %s", path))
 		}
-		if !utils.IsFolder(archiveEntry.Name) {
+		if skipFolderCheck(params) || !utils.IsFolder(archiveEntry.Name) {
 			limitingReader := provider.CreateLimitAggregatingReadCloser(rc)
 			archiveHeader := NewArchiveHeader(limitingReader, archiveEntry.Name, archiveEntry.ModTime.Unix(), archiveEntry.Size)
 			err = processingFunc(archiveHeader, params)
@@ -59,4 +62,13 @@ func (da DebArchiver) ExtractArchive(path string,
 		}
 	}
 	return nil
+}
+
+func skipFolderCheck(params map[string]interface{}) bool {
+	value, found := params[DebArchiverSkipFoldersCheckParamsKey]
+	if !found {
+		return false
+	}
+	boolValue, ok := value.(bool)
+	return ok && boolValue
 }
