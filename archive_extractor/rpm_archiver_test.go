@@ -1,3 +1,5 @@
+//go:build tests_group_all
+
 package archive_extractor
 
 import (

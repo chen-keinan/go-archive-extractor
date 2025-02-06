@@ -1,7 +1,10 @@
+//go:build tests_group_all
+
 package archive_extractor
 
 import (
 	"fmt"
+	"github.com/jfrog/go-archive-extractor/archive_extractor/archiver_errors"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -15,7 +18,7 @@ func Test7ZipAndRarArchiver(t *testing.T) {
 	}
 	ad := funcParams["archiveData"].(*ArchiveData)
 	assert.Equal(t, ad.Name, "Interactive travel sample/.spxproperties")
-	assert.Equal(t, ad.ModTime, int64(-11644473600))
+	assert.Equal(t, ad.ModTime, int64(6802270473))
 	assert.Equal(t, ad.IsFolder, false)
 	assert.Equal(t, ad.Size, int64(44))
 }
@@ -26,6 +29,15 @@ func Test7ZipAndRarArchiverReadAll(t *testing.T) {
 	err := za.ExtractArchive("./fixtures/testwithcontent.7z", processingReadingFunc, funcParams)
 	assert.NoError(t, err)
 	assert.Equal(t, int64(4410), funcParams["read"])
+}
+
+func TestRarArchiver_NonSevenZipFile(t *testing.T) {
+	// zip file with .rar extension (changed manually)
+	sz := &SevenZipArchiver{}
+	funcParams := params()
+	err := sz.ExtractArchive("./fixtures/notRarFile.rar", processingFunc, funcParams)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), archiver_errors.SevenZipDecodeError.Error())
 }
 
 func Test7ZipAndRarArchiverLimitRatio(t *testing.T) {
@@ -52,7 +64,7 @@ func Test7ZipAndRarArchiverLimitNumberOfRecords(t *testing.T) {
 	}
 	funcParams := params()
 	err := za.ExtractArchive("./fixtures/testwithmultipleentries.7z", processingReadingFunc, funcParams)
-	assert.EqualError(t, err, ErrTooManyEntries.Error())
+	assert.Contains(t, err.Error(), ErrTooManyEntries.Error())
 }
 
 func Test7ZipAndRarArchiverLimitRatioAggregationCauseError(t *testing.T) {

@@ -18,7 +18,8 @@ func newErrCompressLimitReached(sizeLimit, total int64) *ErrCompressLimitReached
 }
 
 func IsErrCompressLimitReached(err error) bool {
-	_, ok := err.(*ErrCompressLimitReached)
+	var errCompressLimitReached *ErrCompressLimitReached
+	ok := errors.As(err, &errCompressLimitReached)
 	return ok
 }
 
