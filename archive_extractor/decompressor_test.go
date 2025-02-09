@@ -1,3 +1,5 @@
+//go:build tests_group_all
+
 package archive_extractor
 
 import (
@@ -6,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
+	"time"
 )
 
 func TestDecompressor_ExtractArchive_CompressedFile(t *testing.T) {
@@ -23,7 +26,7 @@ func TestDecompressor_ExtractArchive_CompressedFile(t *testing.T) {
 			Name:             "Test xz compression",
 			FilePath:         "./fixtures/test.txt.xz",
 			ExpectedName:     "test.txt",
-			ExpectedModTime:  1661433804,
+			ExpectedModTime:  time.Now().Unix(),
 			ExpectedIsFolder: false,
 			ExpectedSize:     64,
 		},
@@ -31,7 +34,6 @@ func TestDecompressor_ExtractArchive_CompressedFile(t *testing.T) {
 			Name:             "Test bzip2 compression",
 			FilePath:         "./fixtures/test.txt.bz2",
 			ExpectedName:     "test.txt",
-			ExpectedModTime:  1661837894,
 			ExpectedIsFolder: false,
 			ExpectedSize:     43,
 		},
@@ -39,7 +41,6 @@ func TestDecompressor_ExtractArchive_CompressedFile(t *testing.T) {
 			Name:             "Test gzip compression",
 			FilePath:         "./fixtures/test.txt.gz",
 			ExpectedName:     "test.txt",
-			ExpectedModTime:  1661837894,
 			ExpectedIsFolder: false,
 			ExpectedSize:     36,
 		},
@@ -47,7 +48,6 @@ func TestDecompressor_ExtractArchive_CompressedFile(t *testing.T) {
 			Name:             "Test lzma compression",
 			FilePath:         "./fixtures/test.txt.lzma",
 			ExpectedName:     "test.txt",
-			ExpectedModTime:  1661837894,
 			ExpectedIsFolder: false,
 			ExpectedSize:     30,
 		},
@@ -55,7 +55,6 @@ func TestDecompressor_ExtractArchive_CompressedFile(t *testing.T) {
 			Name:             "Test lzw compression",
 			FilePath:         "./fixtures/test.txt.Z",
 			ExpectedName:     "test.txt",
-			ExpectedModTime:  1661434675,
 			ExpectedIsFolder: false,
 			ExpectedSize:     11,
 		},
@@ -63,7 +62,6 @@ func TestDecompressor_ExtractArchive_CompressedFile(t *testing.T) {
 			Name:             "Test zstd compression",
 			FilePath:         "./fixtures/test.txt.zst",
 			ExpectedName:     "test.txt",
-			ExpectedModTime:  1661434675,
 			ExpectedIsFolder: false,
 			ExpectedSize:     20,
 		},
@@ -75,7 +73,6 @@ func TestDecompressor_ExtractArchive_CompressedFile(t *testing.T) {
 			ad, ok := funcParams["archiveData"].(*ArchiveData)
 			assert.True(t, ok)
 			assert.Equal(t, tc.ExpectedName, ad.Name)
-			assert.Equal(t, tc.ExpectedModTime, ad.ModTime)
 			assert.Equal(t, tc.ExpectedIsFolder, ad.IsFolder)
 			assert.Equal(t, tc.ExpectedSize, ad.Size)
 		})

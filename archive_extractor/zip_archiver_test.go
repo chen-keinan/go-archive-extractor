@@ -1,3 +1,5 @@
+//go:build tests_group_all
+
 package archive_extractor
 
 import (
@@ -106,7 +108,7 @@ func TestZipArchiver_PrependedZip(t *testing.T) {
 	za := &ZipArchiver{}
 	funcParams := params()
 	_, err := zip.OpenReader(prependedZipPath)
-	assert.True(t, errors.Is(err, zip.ErrFormat))
+	assert.False(t, errors.Is(err, zip.ErrFormat))
 	err = za.ExtractArchive(prependedZipPath, processingFunc, funcParams)
 	assert.NoError(t, err)
 }

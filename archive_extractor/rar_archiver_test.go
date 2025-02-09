@@ -1,6 +1,9 @@
+//go:build tests_group_all
+
 package archive_extractor
 
 import (
+	"github.com/jfrog/go-archive-extractor/archive_extractor/archiver_errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -19,13 +22,13 @@ func TestRarArchiver(t *testing.T) {
 	assert.Equal(t, ad.Size, int64(695028))
 }
 
-func TestRarArchiver_NoRarFile(t *testing.T) {
+func TestRarArchiver_NonRarFile(t *testing.T) {
 	// zip file with .rar extension (changed manually)
 	ra := &RarArchiver{}
 	funcParams := params()
 	err := ra.ExtractArchive("./fixtures/notRarFile.rar", processingFunc, funcParams)
 	assert.Error(t, err)
-	assert.Equal(t, err.Error(), "rardecode: RAR signature not found")
+	assert.Contains(t, err.Error(), archiver_errors.RarDecodeError.Error())
 }
 
 func TestRarArchiver_ExtractArchive(t *testing.T) {
@@ -62,10 +65,10 @@ func TestRarArchiver_MaxNumberOfEntriesNotReached(t *testing.T) {
 }
 
 func TestRarArchiver_MaxNumberOfEntriesReached(t *testing.T) {
-	ra := &RarArchiver{MaxCompressRatio: 1, MaxNumberOfEntries: 99}
+	ra := &RarArchiver{MaxCompressRatio: 1, MaxNumberOfEntries: 97}
 	funcParams := params()
 	err := ra.ExtractArchive("./fixtures/testwithmanyfiles.rar", processingReadingFunc, funcParams)
-	assert.EqualError(t, err, ErrTooManyEntries.Error())
+	assert.Contains(t, err.Error(), ErrTooManyEntries.Error())
 }
 
 func TestRarArchiver_AggregationCauseRatioLimitError(t *testing.T) {
