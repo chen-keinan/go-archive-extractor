@@ -1,6 +1,6 @@
 module github.com/jfrog/go-archive-extractor
 
-go 1.23.3
+go 1.23.0
 
 require (
 	github.com/blakesmith/ar v0.0.0-20190502131153-809d4375e1fb
