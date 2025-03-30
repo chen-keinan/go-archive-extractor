@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	//FolderSuffix const
+	//FolderSuffix const test
 	FolderSuffix string = "/"
 )
 
